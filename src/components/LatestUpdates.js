@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { mockData } from '@/lib/api';
 import { ArrowLeft, ArrowRight, Calendar } from 'lucide-react';
 
@@ -68,11 +69,12 @@ export default function LatestUpdates() {
                   style={{ minHeight: 320 }}
                 >
                   {/* Image */}
-                  <div className="w-full md:w-1/2 h-56 md:h-64 rounded-xl overflow-hidden shadow-md flex-shrink-0">
-                    <img
+                  <div className="w-full md:w-1/2 h-56 md:h-64 rounded-xl overflow-hidden shadow-md flex-shrink-0 relative">
+                    <Image
                       src={update.image}
                       alt={update.title}
-                      className="w-full h-full object-cover object-center"
+                      fill
+                      className="object-cover object-center"
                       loading="lazy"
                     />
                   </div>

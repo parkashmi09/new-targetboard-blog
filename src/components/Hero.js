@@ -1,6 +1,7 @@
 'use client';
 
 import { GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 import { mockData } from '@/lib/api';
 import { useEffect, useState } from 'react';
 
@@ -115,11 +116,12 @@ export default function Hero() {
             <div className="absolute top-4 right-4 z-30 bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">#1 Rated</div>
             {/* Carousel Images */}
             {images.map((img, idx) => (
-              <img
+              <Image
                 key={img}
                 src={img}
                 alt="Education Hero"
-                className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
+                fill
+                className={`object-cover object-center transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
                 loading={idx === 0 ? 'eager' : 'lazy'}
                 style={{ filter: 'brightness(0.95) saturate(1.1)' }}
               />

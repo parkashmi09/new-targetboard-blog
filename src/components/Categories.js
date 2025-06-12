@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { mockData } from '@/lib/api';
 import { FlaskConical, Stethoscope, BookOpen, GraduationCap, Briefcase, Landmark } from 'lucide-react';
 
@@ -36,10 +37,11 @@ export default function Categories() {
                 className="group relative rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-[#FAEBCE] bg-[#FFFFFF]"
               >
                 {/* Background Image */}
-                <img
+                <Image
                   src={category.image}
                   alt={category.name}
-                  className="absolute inset-0 w-full h-full object-cover object-center opacity-80 group-hover:scale-105 transition-transform duration-300 z-0"
+                  fill
+                  className="object-cover object-center opacity-80 group-hover:scale-105 transition-transform duration-300 z-0"
                   loading="lazy"
                 />
                 {/* Overlay for contrast */}
