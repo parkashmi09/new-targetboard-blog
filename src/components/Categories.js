@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 import { mockData } from '@/lib/api';
-import { FlaskConical, Stethoscope, BookOpen, GraduationCap, Briefcase, Landmark } from 'lucide-react';
+import { FlaskConical, Stethoscope, BookOpen, GraduationCap, Briefcase, Landmark, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const iconMap = {
   FlaskConical,
@@ -13,6 +14,36 @@ const iconMap = {
 };
 
 export default function Categories() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => 
+      prev === mockData.categories.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => 
+      prev === 0 ? mockData.categories.length - 1 : prev - 1
+    );
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   return (
     <section className="py-8 bg-[#FAEBCE]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,47 +57,132 @@ export default function Categories() {
           </p>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockData.categories.map((category) => {
-            const Icon = iconMap[category.icon] || BookOpen;
-            return (
-              <Link
-                key={category.id}
-                href={`/category/${category.name.toLowerCase()}`}
-                className="group relative rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-[#FAEBCE] bg-[#FFFFFF]"
+        {/* Categories - Mobile Carousel / Desktop Grid */}
+        {isMobile ? (
+          <div className="relative mb-8">
+            {/* Carousel Container */}
+            <div className="overflow-hidden rounded-2xl">
+              <div 
+                className="flex transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
-                {/* Background Image */}
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  className="object-cover object-center opacity-80 group-hover:scale-105 transition-transform duration-300 z-0"
-                  loading="lazy"
+                {mockData.categories.map((category) => {
+                  const Icon = iconMap[category.icon] || BookOpen;
+                  return (
+                    <div key={category.id} className="w-full flex-shrink-0">
+                      <Link
+                        href={`/category/${category.name.toLowerCase()}`}
+                        className="group relative block rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-[#FAEBCE] bg-[#FFFFFF]"
+                      >
+                        {/* Background Image */}
+                        <Image
+                          src={category.image}
+                          alt={category.name}
+                          fill
+                          className="object-cover object-center opacity-80 group-hover:scale-105 transition-transform duration-300 z-0"
+                          loading="lazy"
+                        />
+                        {/* Overlay for contrast */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1F1E1D]/80 to-transparent z-10" />
+                        {/* Content */}
+                        <div className="relative z-20 flex flex-col items-center justify-center h-64 p-8 text-center">
+                          <div className="mb-4 bg-[#003400] rounded-full p-4 shadow-lg flex items-center justify-center">
+                            <Icon className="h-10 w-10 text-[#FAEBCE]" />
+                          </div>
+                          <h3 className="text-2xl font-bold text-[#003400] mb-2 font-jakarta group-hover:text-[#003400] transition-colors">
+                            {category.name}
+                          </h3>
+                          <p className="text-[#000000] mb-4 font-jakarta leading-relaxed group-hover:text-[#000000]">
+                            {category.description}
+                          </p>
+                          <div className="inline-flex items-center justify-center w-10 h-10 bg-[#FAEBCE] text-[#003400] rounded-full group-hover:bg-[#003400] group-hover:text-[#FAEBCE] transition-colors">
+                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#003400] text-[#FAEBCE] rounded-full p-2 shadow-lg hover:bg-[#FFCC01] hover:text-[#003400] transition-all duration-200 z-30"
+              aria-label="Previous category"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#003400] text-[#FAEBCE] rounded-full p-2 shadow-lg hover:bg-[#FFCC01] hover:text-[#003400] transition-all duration-200 z-30"
+              aria-label="Next category"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {mockData.categories.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    index === currentSlide 
+                      ? 'bg-[#003400] scale-125' 
+                      : 'bg-[#003400]/30 hover:bg-[#003400]/50'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
                 />
-                {/* Overlay for contrast */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1F1E1D]/80 to-transparent z-10" />
-                {/* Content */}
-                <div className="relative z-20 flex flex-col items-center justify-center h-64 p-8 text-center">
-                  <div className="mb-4 bg-[#003400] rounded-full p-4 shadow-lg flex items-center justify-center">
-                    <Icon className="h-10 w-10 text-[#FAEBCE]" />
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* Desktop Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            {mockData.categories.map((category) => {
+              const Icon = iconMap[category.icon] || BookOpen;
+              return (
+                <Link
+                  key={category.id}
+                  href={`/category/${category.name.toLowerCase()}`}
+                  className="group relative rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-[#FAEBCE] bg-[#FFFFFF]"
+                >
+                  {/* Background Image */}
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover object-center opacity-80 group-hover:scale-105 transition-transform duration-300 z-0"
+                    loading="lazy"
+                  />
+                  {/* Overlay for contrast */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1F1E1D]/80 to-transparent z-10" />
+                  {/* Content */}
+                  <div className="relative z-20 flex flex-col items-center justify-center h-64 p-8 text-center">
+                    <div className="mb-4 bg-[#003400] rounded-full p-4 shadow-lg flex items-center justify-center">
+                      <Icon className="h-10 w-10 text-[#FAEBCE]" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-[#003400] mb-2 font-jakarta group-hover:text-[#003400] transition-colors">
+                      {category.name}
+                    </h3>
+                    <p className="text-[#000000] mb-4 font-jakarta leading-relaxed group-hover:text-[#000000]">
+                      {category.description}
+                    </p>
+                    <div className="inline-flex items-center justify-center w-10 h-10 bg-[#FAEBCE] text-[#003400] rounded-full group-hover:bg-[#003400] group-hover:text-[#FAEBCE] transition-colors">
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-[#003400] mb-2 font-jakarta group-hover:text-[#003400] transition-colors">
-                    {category.name}
-                  </h3>
-                  <p className="text-[#000000] mb-4 font-jakarta leading-relaxed group-hover:text-[#000000]">
-                    {category.description}
-                  </p>
-                  <div className="inline-flex items-center justify-center w-10 h-10 bg-[#FAEBCE] text-[#003400] rounded-full group-hover:bg-[#003400] group-hover:text-[#FAEBCE] transition-colors">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
         {/* Additional Features */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -128,4 +244,4 @@ export default function Categories() {
       </div>
     </section>
   );
-} 
+}
