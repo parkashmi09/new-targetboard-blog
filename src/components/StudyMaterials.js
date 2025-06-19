@@ -493,7 +493,7 @@ export default function StudyMaterials() {
                             No materials found
                         </h3>
                         <p className="text-base opacity-75 mb-6" style={{ color: '#FAEBCE' }}>
-                            We're working on adding more materials for this category.
+                            We&apos;re working on adding more materials for this category.
                         </p>
                         <button
                             onClick={() => setActiveTab('all')}

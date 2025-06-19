@@ -2,13 +2,40 @@
 
 import { GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-import { mockData } from '@/lib/api';
 import { useEffect, useState } from 'react';
 
 export default function Hero() {
-  const images = mockData.heroImages;
+  const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [fade, setFade] = useState(true);
+
+  // Fetch banners from API
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/banners');
+        if (!response.ok) {
+          throw new Error('Failed to fetch banners');
+        }
+        const data = await response.json();
+        setBanners(data || []);
+      } catch (err) {
+        console.error('Error fetching banners:', err);
+        // Fallback to a default banner if API fails
+        setBanners([{
+          _id: 'fallback',
+          imageUrl: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80',
+          title: 'Education Hero'
+        }]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBanners();
+  }, []);
 
   // Content for each slide
   const slidesContent = [
@@ -55,33 +82,61 @@ export default function Hero() {
 
   // Manual navigation handlers
   const prevSlide = () => {
+    if (banners.length === 0) return;
     setFade(false);
     setTimeout(() => {
-      setCurrent((prev) => (prev - 1 + images.length) % images.length);
+      setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
       setFade(true);
     }, 300);
   };
+
   const nextSlide = () => {
+    if (banners.length === 0) return;
     setFade(false);
     setTimeout(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
+      setCurrent((prev) => (prev + 1) % banners.length);
       setFade(true);
     }, 300);
   };
 
   useEffect(() => {
+    if (banners.length === 0) return;
+    
     const interval = setInterval(() => {
       setFade(false);
       setTimeout(() => {
-        setCurrent((prev) => (prev + 1) % images.length);
+        setCurrent((prev) => (prev + 1) % banners.length);
         setFade(true);
       }, 1000); // fade out duration
     }, 5000);
     return () => clearInterval(interval);
-  }, [images.length]);
+  }, [banners.length]);
 
   // Pick content for current slide, fallback to first if not enough slidesContent
   const slide = slidesContent[current % slidesContent.length];
+
+  if (loading) {
+    return (
+      <section className="relative w-full min-h-[420px] flex items-center justify-center overflow-hidden bg-[#FAEBCE] px-4 md:px-0">
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-beige via-ivory/80 to-beige z-0" />
+        <div className="w-full max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-12 py-6 relative z-10">
+          {/* Left side content remains the same */}
+          <div className="flex-1 min-w-[320px] max-w-[540px] text-left flex flex-col justify-center">
+            <div className="mb-2 text-black text-lg font-semibold tracking-wide uppercase">Loading...</div>
+            <h1 className="text-4xl font-extrabold text-mandai-green mb-4 font-jakarta leading-tight tracking-tight">
+              Target Board
+            </h1>
+          </div>
+          {/* Loading skeleton for image */}
+          <div className="flex-1 flex items-center justify-center w-full">
+            <div className="relative w-full max-w-2xl aspect-[4/2] bg-gray-200 rounded-2xl shadow-2xl overflow-hidden animate-pulse">
+              <div className="w-full h-full bg-gray-300"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative w-full min-h-[420px] flex items-center justify-center overflow-hidden bg-[#FAEBCE] px-4 md:px-0">
@@ -92,7 +147,7 @@ export default function Hero() {
         <div className="flex-1 min-w-[320px] max-w-[540px] text-left flex flex-col justify-center">
           {/* Tagline */}
           <div className="mb-2 text-black text-lg font-semibold tracking-wide uppercase">{slide.tagline}</div>
-          <h1 className="text-4xl  font-extrabold text-mandai-green mb-4 font-jakarta leading-tight tracking-tight">
+          <h1 className="text-4xl font-extrabold text-mandai-green mb-4 font-jakarta leading-tight tracking-tight">
             {slide.heading}
           </h1>
           <p className="text-xl text-black mb-8 font-jakarta leading-relaxed max-w-xl drop-shadow">
@@ -109,23 +164,25 @@ export default function Hero() {
             </a>
           </div>
         </div>
-        {/* Right Side: Image Carousel Card */}
+        {/* Right Side: Banner Images from API */}
         <div className="flex-1 flex items-center justify-center w-full">
           <div className="relative w-full max-w-2xl aspect-[4/2] bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center transition-transform duration-300 hover:scale-[1.025]">
             {/* Floating #1 Rated Badge */}
-            <div className="absolute top-4 right-4  bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">#1 Rated</div>
-            {/* Carousel Images */}
-            {images.map((img, idx) => (
+            <div className="absolute top-4 right-4 z-30 bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">#1 Rated</div>
+            
+            {/* Banner Images */}
+            {banners.length > 0 && banners.map((banner, idx) => (
               <Image
-                key={img}
-                src={img}
-                alt="Education Hero"
+                key={banner._id}
+                src={banner.imageUrl}
+                alt={banner.title || 'Education Banner'}
                 fill
                 className={`object-cover object-center transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
                 loading={idx === 0 ? 'eager' : 'lazy'}
                 style={{ filter: 'brightness(0.95) saturate(1.1)' }}
               />
             ))}
+
             {/* Overlay Content */}
             <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-black/10 to-transparent z-10">
               <div className="text-white text-lg md:text-2xl font-bold drop-shadow mb-2">Where Every Door Leads to Infinite Opportunities</div>
@@ -135,30 +192,38 @@ export default function Hero() {
                 <span>9000+ Offers</span>
               </div>
             </div>
-            {/* Navigation Arrows */}
-            <button
-              onClick={prevSlide}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-mandai-green rounded-full p-2 shadow z-20 focus:outline-none focus:ring-2 focus:ring-mandai-green"
-              aria-label="Previous Slide"
-            >
-              <ChevronLeft className="h-6 w-6 text-black" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-mandai-green rounded-full p-2 shadow z-20 focus:outline-none focus:ring-2 focus:ring-mandai-green"
-              aria-label="Next Slide"
-            >
-              <ChevronRight className="h-6 w-6 text-black" />
-            </button>
-            {/* Dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-              {images.map((_, idx) => (
-                <span
-                  key={idx}
-                  className={`block w-2 h-2 rounded-full ${idx === current ? 'bg-[#003400]' : 'bg-white/60'}`}
-                />
-              ))}
-            </div>
+
+            {/* Navigation Arrows - only show if multiple banners */}
+            {banners.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-mandai-green rounded-full p-2 shadow z-20 focus:outline-none focus:ring-2 focus:ring-mandai-green"
+                  aria-label="Previous Slide"
+                >
+                  <ChevronLeft className="h-6 w-6 text-black" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-mandai-green rounded-full p-2 shadow z-20 focus:outline-none focus:ring-2 focus:ring-mandai-green"
+                  aria-label="Next Slide"
+                >
+                  <ChevronRight className="h-6 w-6 text-black" />
+                </button>
+              </>
+            )}
+
+            {/* Dots - only show if multiple banners */}
+            {banners.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                {banners.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={`block w-2 h-2 rounded-full ${idx === current ? 'bg-[#003400]' : 'bg-white/60'}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

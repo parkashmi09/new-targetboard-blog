@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'image-store.blr1.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   async headers() {
