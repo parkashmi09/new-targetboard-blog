@@ -5,7 +5,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden" style={{ backgroundColor: '#0000' }}>
+    <footer className="relative overflow-hidden" style={{ backgroundColor: 'black' }}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-10 left-10 w-72 h-72 rounded-full opacity-5 animate-pulse" style={{ backgroundColor: '#FAEBCE' }}></div>

@@ -113,7 +113,7 @@ export default function Hero() {
         <div className="flex-1 flex items-center justify-center w-full">
           <div className="relative w-full max-w-2xl aspect-[4/2] bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center transition-transform duration-300 hover:scale-[1.025]">
             {/* Floating #1 Rated Badge */}
-            <div className="absolute top-4 right-4 z-30 bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">#1 Rated</div>
+            <div className="absolute top-4 right-4  bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">#1 Rated</div>
             {/* Carousel Images */}
             {images.map((img, idx) => (
               <Image

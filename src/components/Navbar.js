@@ -2,14 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { mockData } from '@/lib/api';
 import { Search } from 'lucide-react';
 import Logo from '../assets/Logo.png';
 import Image from 'next/image';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e) => {
@@ -19,7 +17,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-ivory shadow-md fixed w-full top-0 z-50 border-b border-beige">
+    <nav className="bg-ivory shadow-md fixed w-full top-0 z-[9997] border-b border-beige">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -31,41 +29,8 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {/* Categories Dropdown */}
-              <div
-                className="relative group"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
-              >
-                <button className="text-mandai-green hover:text-mandai-dark px-3 py-2 rounded-md text-sm font-medium font-jakarta transition-colors">
-                  Categories
-                </button>
-                {/* Dropdown Overlay */}
-                {dropdownOpen && (
-                  <div className="absolute left-0 mt-3 w-[600px] bg-white rounded-xl shadow-xl  z-50 animate-fadeIn">
-                    {/* Arrow */}
-                    <div className="absolute -top-5 left-8 w-6 h-6 overflow-hidden z-[20] ">
-                      <svg width="24" height="24" viewBox="0 0 24 24" className="block ">
-                        <polygon points="12,0 24,24 0,24" fill="#fff" stroke="#FAEBCE" strokeWidth="1" />
-                      </svg>
-                    </div>
-                    <div className="py-6 px-8 grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
-                      {mockData.categories.map((category) => (
-                        <Link
-                          key={category.id}
-                          href={`/category/${category.name.toLowerCase()}`}
-                          className="block text-base text-mandai-green hover:text-mandai-dark font-jakarta py-1 px-2 rounded transition-colors"
-                        >
-                          {category.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
+          {/* <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-8">
               <Link
                 href="/study-materials"
                 className="text-mandai-green hover:text-mandai-dark px-3 py-2 rounded-md text-sm font-medium font-jakarta transition-colors"
@@ -87,7 +52,7 @@ export default function Navbar() {
                 Blog
               </Link>
             </div>
-          </div>
+          </div> */}
 
           {/* Search Bar */}
           <div className="hidden md:block flex-1 max-w-md mx-8">
@@ -162,23 +127,6 @@ export default function Navbar() {
             >
               Blog
             </Link>
-
-            {/* Mobile Categories */}
-            <div className="px-3 py-2">
-              <div className="text-sm font-medium text-mandai-dark mb-2 font-jakarta">Categories</div>
-              <div className="space-y-1">
-                {mockData.categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/category/${category.name.toLowerCase()}`}
-                    className="block px-3 py-2 text-sm text-mandai-green hover:bg-beige hover:text-mandai-dark rounded-md font-jakarta"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       )}
