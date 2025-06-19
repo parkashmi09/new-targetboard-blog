@@ -6,30 +6,6 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden" style={{ backgroundColor: 'black' }}>
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 left-10 w-72 h-72 rounded-full opacity-5 animate-pulse" style={{ backgroundColor: '#FAEBCE' }}></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full opacity-5 animate-pulse delay-1000" style={{ backgroundColor: '#FAF5E9' }}></div>
-        <div className="absolute top-1/2 left-1/4 w-48 h-48 rounded-full opacity-5 animate-bounce delay-500" style={{ backgroundColor: '#FAEBCE' }}></div>
-        
-        {/* Floating Icons */}
-        <div className="absolute top-20 right-32 opacity-10 animate-float delay-300">
-          <svg className="w-6 h-6" style={{ color: '#FAEBCE' }} fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-        </div>
-        <div className="absolute bottom-32 left-20 opacity-10 animate-float delay-700">
-          <svg className="w-8 h-8" style={{ color: '#FAEBCE' }} fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-          </svg>
-        </div>
-        <div className="absolute top-40 left-1/2 opacity-10 animate-float delay-1000">
-          <svg className="w-7 h-7" style={{ color: '#FAEBCE' }} fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
-        </div>
-      </div>
-
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Enhanced Brand Section */}
@@ -39,7 +15,7 @@ export default function Footer() {
                 <span className="text-4xl font-black font-jakarta relative z-10" style={{ color: '#FFD600', letterSpacing: '-0.02em' }}>
                   Target Board
                 </span>
-                <div className="absolute -bottom-1 left-0 w-full h-2 opacity-30 rounded-full" style={{ backgroundColor: '#FAEBCE' }}></div>
+                {/* <div className="absolute -bottom-1 left-0 w-full h-2 opacity-30 rounded-full" style={{ backgroundColor: '#FAEBCE' }}></div> */}
               </div>
               <div className="mt-2 flex items-center space-x-2">
                 <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#FFD600' }}></div>
@@ -229,16 +205,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
     </footer>
   );
 }
