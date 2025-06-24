@@ -288,7 +288,7 @@ export default function StudyMaterials() {
                         <p className="text-base opacity-75" style={{ color: '#FAEBCE' }}>
                             Fetching study categories from our database
                         </p>
-                    </div>
+                        </div>
                 )}
 
                 {/* Error State */}
@@ -299,7 +299,7 @@ export default function StudyMaterials() {
                                 <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                                 </svg>
-                            </div>
+                        </div>
                         </div>
                         <h3 className="text-xl font-bold mb-3" style={{ color: '#FAEBCE' }}>
                             Failed to Load Categories
@@ -330,15 +330,15 @@ export default function StudyMaterials() {
                                         const isActive = activeTab === tabId;
                                         
                                         return (
-                                            <button
+                        <button
                                                 key={tabId}
                                                 onClick={() => setActiveTab(tabId)}
                                                 className={`flex-shrink-0 flex items-center px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 ${
                                                     isActive
-                                                        ? 'text-black shadow-xl scale-105'
-                                                        : 'text-white border-2 border-opacity-30 hover:border-opacity-60'
-                                                }`}
-                                                style={{
+                                    ? 'text-black shadow-xl scale-105'
+                                    : 'text-white border-2 border-opacity-30 hover:border-opacity-60'
+                                }`}
+                            style={{
                                                     backgroundColor: isActive ? '#FAEBCE' : 'transparent',
                                                     borderColor: '#FAEBCE',
                                                     minWidth: '140px'
@@ -350,129 +350,129 @@ export default function StudyMaterials() {
                                                     <span className="ml-2 text-xs opacity-60 bg-black bg-opacity-20 px-2 py-1 rounded-full">
                                                         {category.subcategories.length}
                                                     </span>
-                                                )}
-                                            </button>
+                            )}
+                        </button>
                                         );
                                     })}
                                 </div>
                             </div>
-                        </div>
+                </div>
 
-                        {/* Materials Display - Desktop Grid / Mobile Carousel */}
-                        {isDesktop ? (
-                            // Desktop Grid Layout
+                {/* Materials Display - Desktop Grid / Mobile Carousel */}
+                {isDesktop ? (
+                    // Desktop Grid Layout
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredMaterials.map((material, index) => (
+                            <MaterialCard key={material.id} material={material} index={index} />
+                        ))}
+                    </div>
+                ) : (
+                    // Mobile Carousel Layout
+                    <div className="relative">
+                        {/* Carousel Container */}
+                        <div 
+                            className="overflow-hidden rounded-2xl"
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={onTouchEnd}
+                            ref={carouselRef}
+                        >
+                            <div 
+                                className="flex transition-transform duration-500 ease-out"
+                                style={{
+                                    transform: `translateX(-${currentSlide * 100}%)`,
+                                }}
+                            >
                                 {filteredMaterials.map((material, index) => (
-                                    <MaterialCard key={material.id} material={material} index={index} />
+                                    <div key={material.id} className="w-full flex-shrink-0 px-2">
+                                        <MaterialCard material={material} index={index} />
+                                    </div>
                                 ))}
                             </div>
-                        ) : (
-                            // Mobile Carousel Layout
-                            <div className="relative">
-                                {/* Carousel Container */}
-                                <div 
-                                    className="overflow-hidden rounded-2xl"
-                                    onTouchStart={onTouchStart}
-                                    onTouchMove={onTouchMove}
-                                    onTouchEnd={onTouchEnd}
-                                    ref={carouselRef}
+                        </div>
+
+                        {filteredMaterials.length > 1 && (
+                            <>
+                                {/* Navigation Arrows */}
+                                <button
+                                    onClick={prevSlide}
+                                    className="absolute left-2 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                                    style={{ backgroundColor: '#FAEBCE', color: '#003400' }}
                                 >
-                                    <div 
-                                        className="flex transition-transform duration-500 ease-out"
-                                        style={{
-                                            transform: `translateX(-${currentSlide * 100}%)`,
-                                        }}
-                                    >
-                                        {filteredMaterials.map((material, index) => (
-                                            <div key={material.id} className="w-full flex-shrink-0 px-2">
-                                                <MaterialCard material={material} index={index} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                
+                                <button
+                                    onClick={nextSlide}
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                                    style={{ backgroundColor: '#FAEBCE', color: '#003400' }}
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
 
-                                {filteredMaterials.length > 1 && (
-                                    <>
-                                        {/* Navigation Arrows */}
+                                {/* Dots Indicator */}
+                                <div className="flex justify-center space-x-2 mt-6">
+                                    {filteredMaterials.map((_, index) => (
                                         <button
-                                            onClick={prevSlide}
-                                            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-10"
-                                            style={{ backgroundColor: '#FAEBCE', color: '#003400' }}
-                                        >
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                            </svg>
-                                        </button>
-                                        
-                                        <button
-                                            onClick={nextSlide}
-                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-10"
-                                            style={{ backgroundColor: '#FAEBCE', color: '#003400' }}
-                                        >
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </button>
-
-                                        {/* Dots Indicator */}
-                                        <div className="flex justify-center space-x-2 mt-6">
-                                            {filteredMaterials.map((_, index) => (
-                                                <button
-                                                    key={index}
-                                                    onClick={() => goToSlide(index)}
+                                            key={index}
+                                            onClick={() => goToSlide(index)}
                                                     className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-                                                        index === currentSlide 
-                                                            ? 'scale-125 shadow-lg' 
-                                                            : 'opacity-50 hover:opacity-75'
-                                                    }`}
-                                                    style={{ 
-                                                        backgroundColor: index === currentSlide ? '#FFD600' : '#FAEBCE'
-                                                    }}
-                                                />
-                                            ))}
-                                        </div>
-
-                                        {/* Slide Counter */}
-                                        <div className="text-center mt-4">
-                                            <span className="text-sm font-medium" style={{ color: '#FAEBCE' }}>
-                                                {currentSlide + 1} of {filteredMaterials.length}
-                                            </span>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Enhanced Empty State */}
-                        {filteredMaterials.length === 0 && !loading && (
-                            <div className="text-center py-16">
-                                <div className="relative inline-block mb-6">
-                                    <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto shadow-xl" style={{ backgroundColor: '#FAEBCE' }}>
-                                        <svg className="w-12 h-12" style={{ color: '#003400' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                    </div>
-                                    <div className="absolute inset-0 rounded-full animate-ping opacity-25" style={{ backgroundColor: '#FAEBCE' }}></div>
+                                                index === currentSlide 
+                                                    ? 'scale-125 shadow-lg' 
+                                                    : 'opacity-50 hover:opacity-75'
+                                            }`}
+                                            style={{ 
+                                                backgroundColor: index === currentSlide ? '#FFD600' : '#FAEBCE'
+                                            }}
+                                        />
+                                    ))}
                                 </div>
-                                <h3 className="text-xl font-bold mb-3" style={{ color: '#FAEBCE' }}>
-                                    No materials found
-                                </h3>
-                                <p className="text-base opacity-75 mb-6" style={{ color: '#FAEBCE' }}>
+
+                                {/* Slide Counter */}
+                                <div className="text-center mt-4">
+                                    <span className="text-sm font-medium" style={{ color: '#FAEBCE' }}>
+                                        {currentSlide + 1} of {filteredMaterials.length}
+                                    </span>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+
+                {/* Enhanced Empty State */}
+                        {filteredMaterials.length === 0 && !loading && (
+                    <div className="text-center py-16">
+                        <div className="relative inline-block mb-6">
+                            <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto shadow-xl" style={{ backgroundColor: '#FAEBCE' }}>
+                                <svg className="w-12 h-12" style={{ color: '#003400' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div className="absolute inset-0 rounded-full animate-ping opacity-25" style={{ backgroundColor: '#FAEBCE' }}></div>
+                        </div>
+                        <h3 className="text-xl font-bold mb-3" style={{ color: '#FAEBCE' }}>
+                            No materials found
+                        </h3>
+                        <p className="text-base opacity-75 mb-6" style={{ color: '#FAEBCE' }}>
                                     We&apos;re working on adding more materials for this category.
-                                </p>
+                        </p>
                                 {categories.length > 0 && (
-                                    <button
+                        <button
                                         onClick={() => {
                                             const firstTabId = categories[0].name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
                                             setActiveTab(firstTabId);
                                         }}
-                                        className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                                        style={{ backgroundColor: '#FAEBCE', color: '#003400' }}
-                                    >
+                            className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                            style={{ backgroundColor: '#FAEBCE', color: '#003400' }}
+                        >
                                         Browse Categories
-                                    </button>
+                        </button>
                                 )}
-                            </div>
+                    </div>
                         )}
                     </>
                 )}
