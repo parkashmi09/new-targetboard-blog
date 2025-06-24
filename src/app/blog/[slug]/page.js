@@ -98,7 +98,7 @@ export default function BlogPostPage() {
 
   if (error || !blog) {
     return (
-      <div className="min-h-screen bg-ivory">
+      <div className="min-h-screen bg-[#FAF5E9]">
         <div className="max-w-4xl mx-auto px-4 py-16">
           <div className="text-center">
             <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl bg-red-500">
@@ -110,7 +110,7 @@ export default function BlogPostPage() {
             <p className="text-gray-600 mb-8">{error || 'The requested blog post could not be found.'}</p>
             <Link
               href="/"
-              className="inline-flex items-center px-6 py-3 bg-mandai-green text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
+              className="inline-flex items-center px-6 py-3 !bg-[#003400] text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
@@ -122,13 +122,13 @@ export default function BlogPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-[#FAF5E9]">
       {/* Clean Header */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <Link
             href="/"
-            className="inline-flex items-center px-4 py-2 text-mandai-green hover:bg-mandai-green hover:text-white rounded-lg transition-colors font-semibold border border-mandai-green"
+            className="inline-flex items-center px-4 py-2 text-[#003400] hover:bg-[#003400] hover:text-white rounded-lg transition-colors font-semibold border border-mandai-green"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
@@ -236,7 +236,7 @@ export default function BlogPostPage() {
               
               <Link
                 href="/"
-                className="inline-flex items-center px-6 py-3 bg-mandai-green text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
+                className="inline-flex items-center px-6 py-3 bg-[#003400] text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 More Articles
