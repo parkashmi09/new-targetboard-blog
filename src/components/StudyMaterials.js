@@ -325,7 +325,7 @@ export default function StudyMaterials() {
                             <div className="overflow-x-auto scrollbar-hide p-2">
                                 <div className="flex space-x-4 pb-4" style={{ minWidth: 'max-content' }}>
                                     {/* Category Tabs */}
-                                    {categories.map((category, index) => {
+                                    {categories.map((category) => {
                                         const tabId = category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
                                         const isActive = activeTab === tabId;
                                         
@@ -416,17 +416,17 @@ export default function StudyMaterials() {
 
                                 {/* Dots Indicator */}
                                 <div className="flex justify-center space-x-2 mt-6">
-                                    {filteredMaterials.map((_, index) => (
+                                    {filteredMaterials.map((_, idx) => (
                                         <button
-                                            key={index}
-                                            onClick={() => goToSlide(index)}
+                                            key={idx}
+                                            onClick={() => goToSlide(idx)}
                                                     className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-                                                index === currentSlide 
+                                                idx === currentSlide 
                                                     ? 'scale-125 shadow-lg' 
                                                     : 'opacity-50 hover:opacity-75'
                                             }`}
                                             style={{ 
-                                                backgroundColor: index === currentSlide ? '#FFD600' : '#FAEBCE'
+                                                backgroundColor: idx === currentSlide ? '#FFD600' : '#FAEBCE'
                                             }}
                                         />
                                     ))}

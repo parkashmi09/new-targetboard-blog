@@ -28,7 +28,6 @@ export default function BlogPostPage() {
         
         const data = await response.json();
 
-        console.log(data,"data");
         setBlog(data);
         setError(null);
       } catch (err) {
@@ -55,7 +54,7 @@ export default function BlogPostPage() {
         month: 'long',
         year: 'numeric'
       });
-    } catch (error) {
+    } catch {
       return 'Date not available';
     }
   };
@@ -84,11 +83,11 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-ivory">
+      <div className="min-h-screen bg-[#FAF5E9]">
         <div className="max-w-4xl mx-auto px-4 py-16">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full border-4 border-opacity-20 border-mandai-green animate-spin mx-auto mb-6" style={{ borderTopColor: '#003400' }}></div>
-            <h2 className="text-2xl font-bold text-mandai-green mb-4 font-jakarta">Loading Article...</h2>
+            <div className="w-16 h-16 rounded-full border-4 border-opacity-20 border-[#003400] animate-spin mx-auto mb-6" style={{ borderTopColor: '#003400' }}></div>
+            <h2 className="text-2xl font-bold text-[#003400] mb-4 font-jakarta">Loading Article...</h2>
             <p className="text-gray-600">Please wait while we fetch the content</p>
           </div>
         </div>
@@ -106,11 +105,11 @@ export default function BlogPostPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-mandai-green mb-4 font-jakarta">Article Not Found</h2>
+            <h2 className="text-2xl font-bold text-[#003400] mb-4 font-jakarta">Article Not Found</h2>
             <p className="text-gray-600 mb-8">{error || 'The requested blog post could not be found.'}</p>
             <Link
               href="/"
-              className="inline-flex items-center px-6 py-3 !bg-[#003400] text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-[#003400] text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
@@ -140,7 +139,7 @@ export default function BlogPostPage() {
       <article className="max-w-4xl mx-auto px-4 py-8">
         {/* Category and Reading Time */}
         <div className="flex items-center justify-between mb-6">
-          <span className="inline-flex items-center px-4 py-2 bg-mandai-green text-white rounded-full text-sm font-semibold">
+          <span className="inline-flex items-center px-4 py-2 bg-[#003400] text-white rounded-full text-sm font-semibold">
             {blog.category?.name || 'General'}
           </span>
           <div className="flex items-center text-gray-600 bg-white px-3 py-2 rounded-full shadow-sm border">
@@ -150,14 +149,14 @@ export default function BlogPostPage() {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-mandai-green mb-6 leading-tight font-jakarta">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#003400] mb-6 leading-tight font-jakarta">
           {blog.title || 'Untitled Article'}
         </h1>
 
         {/* Meta Information */}
         <div className="flex flex-wrap items-center gap-6 mb-8 p-4 bg-white rounded-lg shadow-sm border">
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-mandai-green flex items-center justify-center mr-3">
+            <div className="w-8 h-8 rounded-full bg-[#003400] flex items-center justify-center mr-3">
               <User className="h-4 w-4 text-white" />
             </div>
             <div>
@@ -210,7 +209,7 @@ export default function BlogPostPage() {
 
         {/* Meta Description */}
         {blog.metaDescription && (
-          <div className="mb-8 p-6 bg-beige rounded-lg border-l-4 border-mandai-green">
+          <div className="mb-8 p-6 bg-[#FAEBCE] rounded-lg border-l-4 border-[#003400]">
             <p className="text-lg text-gray-700 italic font-jakarta leading-relaxed">
               {blog.metaDescription}
             </p>

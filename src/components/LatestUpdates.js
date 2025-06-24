@@ -70,6 +70,7 @@ export default function LatestUpdates() {
     );
   };
 
+  // Safe date formatting
   const formatDate = (dateString) => {
     if (!dateString) return 'Date not available';
     try {
@@ -80,7 +81,7 @@ export default function LatestUpdates() {
         month: 'short',
         year: 'numeric'
       });
-    } catch (error) {
+    } catch {
       return 'Date not available';
     }
   };
