@@ -185,16 +185,18 @@ export default function Hero() {
             
             {/* Banner Images */}
             {banners.length > 0 && banners.map((banner, idx) => (
-              <div
+              <img
+                src={banner.imageUrl}
+                alt={banner.title || 'Education Banner'}
                 key={banner._id}
-                className={`absolute inset-0 transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
-                style={{
-                  backgroundImage: `url('${banner.imageUrl}'), url('https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80'), linear-gradient(135deg, #003400 0%, #006600 100%)`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                  filter: 'brightness(0.95) saturate(1.1)'
-                }}
+                className={`absolute w-full h-full object-cover inset-0 transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
+                // style={{
+                //   backgroundImage: `url('${banner.imageUrl}'), url('https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80'), linear-gradient(135deg, #003400 0%, #006600 100%)`,
+                //   backgroundSize: 'cover',
+                //   backgroundPosition: 'center',
+                //   backgroundRepeat: 'no-repeat',
+                //   filter: 'brightness(0.95) saturate(1.1)'
+                // }}
               />
             ))}
 
