@@ -1,7 +1,7 @@
 'use client';
 
 import { GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function Hero() {
@@ -15,43 +15,15 @@ export default function Hero() {
     const fetchBanners = async () => {
       try {
         setLoading(true);
-        // Using provided static data instead of API call
-        const data = [
-          {
-            "_id": "6856c4eafcdc042f32652398",
-            "title": "11TH ENGLISH",
-            "imageUrl": "https://image-store.blr1.digitaloceanspaces.com/banners/e0be1246-8db3-41e6-918d-850bb271d8d7.png",
-            "createdAt": "2025-06-21T14:42:50.994Z",
-            "updatedAt": "2025-06-24T20:05:03.493Z",
-            "__v": 0,
-            "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
-            "url": "https://www.thumbnailguru.in/"
-          },
-          {
-            "_id": "6856c4e4fcdc042f32652387",
-            "title": "11TH ENGLISH",
-            "imageUrl": "https://image-store.blr1.digitaloceanspaces.com/banners/4190ffdc-e951-4c6d-82db-4f148614552d.png",
-            "createdAt": "2025-06-21T14:42:44.939Z",
-            "updatedAt": "2025-06-24T20:05:18.240Z",
-            "__v": 0,
-            "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
-            "url": ""
-          },
-          {
-            "_id": "68474990c6f52f2e54023fe1",
-            "title": "What is Lorem Ipsum",
-            "imageUrl": "https://image-store.blr1.digitaloceanspaces.com/banners/fd89f29d-6045-43b2-8902-f9cea1762d49.png",
-            "createdAt": "2025-06-09T20:52:32.292Z",
-            "updatedAt": "2025-06-24T20:05:43.024Z",
-            "__v": 0,
-            "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
-            "url": ""
-          }
-        ];
+        const response = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/banners');
+        if (!response.ok) {
+          throw new Error('Failed to fetch banners');
+        }
+        const data = await response.json();
         setBanners(data || []);
       } catch (err) {
-        console.error('Error setting banners:', err);
-        // Fallback to a default banner if something goes wrong
+        console.error('Error fetching banners:', err);
+        // Fallback to a default banner if API fails
         setBanners([{
           _id: 'fallback',
           imageUrl: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80',
@@ -186,18 +158,15 @@ export default function Hero() {
           {/* Tagline */}
           <div className="mb-2 text-black text-lg font-semibold tracking-wide uppercase">{slide.tagline}</div>
           <h1 className="text-4xl font-extrabold text-mandai-green mb-4 font-jakarta leading-tight tracking-tight">
-            {slide.heading}
+            {currentBanner ? currentBanner.title : slide.heading}
           </h1>
-          {/* Show description from API data */}
-          {currentBanner && (
-            <p className="text-xl text-black mb-8 font-jakarta leading-relaxed max-w-xl drop-shadow">
-              {currentBanner.description}
-            </p>
-          )}
+          <p className="text-xl text-black mb-8 font-jakarta leading-relaxed max-w-xl drop-shadow">
+            {currentBanner ? currentBanner.description : slide.subheading}
+          </p>
           {/* CTA Button */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <a
-              href="#"
+              href={currentBanner?.url || "#"}
               className="inline-flex items-center justify-center px-8 py-4 bg-[#003400] text-beige rounded-full font-bold text-lg font-jakarta shadow-lg hover:bg-green-900 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-mandai-green"
             >
               {slide.cta}
@@ -216,25 +185,35 @@ export default function Hero() {
             
             {/* Banner Images */}
             {banners.length > 0 && banners.map((banner, idx) => (
-              <Image
+              <div
                 key={banner._id}
-                src={banner.imageUrl}
-                alt={banner.title || 'Education Banner'}
-                fill
-                className={`object-cover object-center transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                style={{ filter: 'brightness(0.95) saturate(1.1)' }}
+                className={`absolute inset-0 transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
+                style={{
+                  backgroundImage: `url('${banner.imageUrl}'), url('https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80'), linear-gradient(135deg, #003400 0%, #006600 100%)`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  filter: 'brightness(0.95) saturate(1.1)'
+                }}
               />
             ))}
 
-            {/* Overlay Content - Using API data */}
-            {currentBanner && (
-              <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-black/10 to-transparent z-10">
-                {currentBanner.url && (
-                  <div className="text-white text-sm font-semibold">
-                    Click to learn more →
-                  </div>
-                )}
+            {/* Fallback when no banners */}
+            {banners.length === 0 && (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#003400] to-green-600 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <h3 className="text-2xl font-bold mb-2">Education Platform</h3>
+                  <p className="text-lg">Your gateway to success</p>
+                </div>
+              </div>
+            )}
+
+            {/* Overlay Content - Only show click indication when URL exists */}
+            {currentBanner?.url && (
+              <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/30 via-transparent to-transparent z-10">
+                <div className="text-white text-sm font-semibold bg-black/50 px-4 py-2 rounded-full self-end">
+                  Click to explore →
+                </div>
               </div>
             )}
 
