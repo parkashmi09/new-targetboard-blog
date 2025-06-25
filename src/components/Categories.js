@@ -132,7 +132,7 @@ export default function Categories() {
                       return (
                         <div key={category._id} className="w-full flex-shrink-0 px-2">
                           <Link
-                            href={`/category/${category.name.toLowerCase().replace(/ /g, '-')}`}
+                            href={`/category/${category._id}`}
                             className="group relative block rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-500 border-2 border-white/20 bg-white"
                           >
                             {/* Background Image */}
@@ -215,7 +215,7 @@ export default function Categories() {
                   return (
                     <Link
                       key={category._id}
-                      href={`/category/${category.name.toLowerCase().replace(/ /g, '-')}`}
+                      href={`/category/${category._id}`}
                       className="group relative rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 border-2 border-white/20 bg-white"
                     >
                       {/* Background Image */}
