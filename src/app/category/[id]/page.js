@@ -208,7 +208,7 @@ export default function CategoryPage() {
             </div>
             <h3 className="text-2xl font-bold mb-4 font-jakarta" style={{ color: '#003400' }}>No Blogs Available</h3>
             <p className="text-gray-600 text-lg mb-8">
-              We're working on adding more content for this category.
+              We&apos;re working on adding more content for this category.
             </p>
             <Link
               href="/"

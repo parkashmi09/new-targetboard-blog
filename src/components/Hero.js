@@ -70,9 +70,9 @@ export default function Hero() {
   // Content for each slide
   const slidesContent = [
     {
-      tagline: "Empowering India's Learners",
+      tagline: "Empowering India&apos;s Learners",
       heading: (
-        <>India's <span className="text-mandai-green underline">#1</span> Online<br />Learning Platform</>
+        <>India&apos;s <span className="text-mandai-green underline">#1</span> Online<br />Learning Platform</>
       ),
       subheading: (
         <>
