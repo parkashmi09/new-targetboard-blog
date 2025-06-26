@@ -209,11 +209,11 @@ export default function CategoryNavbar() {
                 {categories[openDropdown]?.subcategories?.map((subcategory, subIndex) => (
                   <Link
                     key={subIndex}
-                    href={`/${categories[openDropdown].name.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}/${subcategory.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
+                    href={`/${categories[openDropdown].name.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}/${subcategory.name.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
                     className="block px-3 py-2 text-sm text-gray-700 hover:bg-[#4A5D3A] hover:text-white rounded-md transition-colors duration-150"
                     onClick={() => setOpenDropdown(null)}
                   >
-                    {subcategory}
+                    {subcategory.name}
                   </Link>
                 ))}
               </div>

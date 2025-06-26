@@ -5,11 +5,17 @@ export default function StudyMaterials() {
     const [activeTab, setActiveTab] = useState('');
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isDesktop, setIsDesktop] = useState(true);
+    const [isMounted, setIsMounted] = useState(false);
     const carouselRef = useRef(null);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Handle mounting to prevent hydration mismatch
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     // Fetch categories from API
     useEffect(() => {
@@ -92,7 +98,7 @@ export default function StudyMaterials() {
             if (selectedCategory.subcategories.length > 0) {
                 return selectedCategory.subcategories.map((subcategory, index) => ({
                     id: `${activeTab}-${index}`,
-                    name: subcategory,
+                    name: subcategory.name,
                     category: selectedCategory.name,
                     categoryIcon: getTabIcon(selectedCategory.name),
                     categoryColor: getTabColor(selectedCategory.name)
@@ -113,8 +119,10 @@ export default function StudyMaterials() {
 
     const filteredMaterials = getActiveCategoryMaterials();
 
-    // Check screen size
+    // Check screen size - only after mounting
     useEffect(() => {
+        if (!isMounted) return;
+        
         const checkScreenSize = () => {
             setIsDesktop(window.innerWidth >= 768);
         };
@@ -122,17 +130,17 @@ export default function StudyMaterials() {
         checkScreenSize();
         window.addEventListener('resize', checkScreenSize);
         return () => window.removeEventListener('resize', checkScreenSize);
-    }, []);
+    }, [isMounted]);
 
-    // Auto-play carousel
+    // Auto-play carousel - only after mounting
     useEffect(() => {
-        if (!isDesktop && isAutoPlaying && filteredMaterials.length > 1) {
+        if (!isMounted || !isDesktop && isAutoPlaying && filteredMaterials.length > 1) {
             const interval = setInterval(() => {
                 setCurrentSlide(prev => (prev + 1) % filteredMaterials.length);
             }, 4000);
             return () => clearInterval(interval);
         }
-    }, [isDesktop, isAutoPlaying, filteredMaterials.length]);
+    }, [isMounted, isDesktop, isAutoPlaying, filteredMaterials.length]);
 
     // Reset slide when tab changes
     useEffect(() => {
@@ -359,9 +367,16 @@ export default function StudyMaterials() {
                 </div>
 
                 {/* Materials Display - Desktop Grid / Mobile Carousel */}
-                {isDesktop ? (
+                {!isMounted ? (
+                    // Show desktop grid by default during SSR to prevent hydration mismatch
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredMaterials.map((material, index) => (
+                            <MaterialCard key={material.id} material={material} index={index} />
+                        ))}
+                    </div>
+                ) : isDesktop ? (
                     // Desktop Grid Layout
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredMaterials.map((material, index) => (
                             <MaterialCard key={material.id} material={material} index={index} />
                         ))}
@@ -420,7 +435,7 @@ export default function StudyMaterials() {
                                         <button
                                             key={idx}
                                             onClick={() => goToSlide(idx)}
-                                                    className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                                            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
                                                 idx === currentSlide 
                                                     ? 'scale-125 shadow-lg' 
                                                     : 'opacity-50 hover:opacity-75'
