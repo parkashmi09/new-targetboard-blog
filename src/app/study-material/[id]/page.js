@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -16,6 +16,9 @@ export default function StudyMaterialPage() {
   const [loading, setLoading] = useState(true);
   const [classesLoading, setClassesLoading] = useState(false);
   const [loadingStates, setLoadingStates] = useState({});
+  
+  // Ref for scrolling class tabs
+  const classTabsRef = useRef(null);
 
   // Fetch subcategory details and classes
   useEffect(() => {
@@ -81,6 +84,26 @@ export default function StudyMaterialPage() {
       setCarousels([]);
     } finally {
       setClassesLoading(false);
+    }
+  };
+
+  // Scroll class tabs left
+  const scrollClassTabsLeft = () => {
+    if (classTabsRef.current) {
+      classTabsRef.current.scrollBy({
+        left: -200,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Scroll class tabs right
+  const scrollClassTabsRight = () => {
+    if (classTabsRef.current) {
+      classTabsRef.current.scrollBy({
+        left: 200,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -204,14 +227,21 @@ export default function StudyMaterialPage() {
           <div className="max-w-7xl mx-auto px-2 sm:px-4">
             <div className="flex items-center space-x-2 sm:space-x-4 overflow-x-auto scrollbar-hide">
               {/* Left arrow */}
-              <button className="flex-shrink-0 p-1.5 sm:p-2 rounded-full" style={{ backgroundColor: '#FFFFFF' }}>
+              <button 
+                onClick={scrollClassTabsLeft}
+                className="flex-shrink-0 p-1.5 sm:p-2 rounded-full hover:shadow-md transition-shadow duration-200" 
+                style={{ backgroundColor: '#FFFFFF' }}
+              >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#003400' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
 
               {/* Class buttons */}
-              <div className="flex space-x-2 sm:space-x-3 p-2 overflow-x-auto scrollbar-hide">
+              <div 
+                ref={classTabsRef}
+                className="flex space-x-2 sm:space-x-3 p-2 overflow-x-auto scrollbar-hide"
+              >
                 {classes.map((classItem) => (
                   <button
                     key={classItem._id}
@@ -234,7 +264,11 @@ export default function StudyMaterialPage() {
               </div>
 
               {/* Right arrow */}
-              <button className="flex-shrink-0 p-1.5 sm:p-2 rounded-full" style={{ backgroundColor: '#FFFFFF' }}>
+              <button 
+                onClick={scrollClassTabsRight}
+                className="flex-shrink-0 p-1.5 sm:p-2 rounded-full hover:shadow-md transition-shadow duration-200" 
+                style={{ backgroundColor: '#FFFFFF' }}
+              >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#003400' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
