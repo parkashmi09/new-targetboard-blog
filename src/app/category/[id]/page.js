@@ -16,29 +16,18 @@ export default function CategoryPage() {
   const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
+    if (!categoryId) return;
+    
     const fetchBlogs = async () => {
-      if (!categoryId) return;
-      
+      setLoading(true);
       try {
-        setLoading(true);
-        const response = await fetch(`https://blog-backend-lv3o.onrender.com/api/v1/blogs?category=${categoryId}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch blogs');
-        }
-        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/blogs?category=${categoryId}`);
         const data = await response.json();
-        setBlogs(data || []);
-        
-        // Set category name from first blog if available
-        if (data && data.length > 0 && data[0].category) {
-          setCategoryName(data[0].category.name);
-        }
-        
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching blogs:', err);
-        setError(err.message);
+        setBlogs(data.blogs || []);
+        setCategoryName(data.categoryName || 'Category');
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+        setError('Failed to load blogs. Please try again later.');
         setBlogs([]);
       } finally {
         setLoading(false);

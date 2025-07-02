@@ -14,23 +14,15 @@ export default function Hero() {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        setLoading(true);
-        const response = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/banners');
-        if (!response.ok) {
-          throw new Error('Failed to fetch banners');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/banners`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.banners && data.banners.length > 0) {
+            setBanners(data.banners);
+          }
         }
-        const data = await response.json();
-        setBanners(data || []);
-      } catch (err) {
-        console.error('Error fetching banners:', err);
-        // Fallback to a default banner if API fails
-        setBanners([{
-          _id: 'fallback',
-          imageUrl: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80',
-          title: 'Education Hero',
-          description: 'Your gateway to quality education',
-          url: ''
-        }]);
+      } catch (error) {
+        console.error('Error fetching banners:', error);
       } finally {
         setLoading(false);
       }

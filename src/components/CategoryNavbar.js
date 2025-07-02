@@ -18,7 +18,7 @@ export default function CategoryNavbar() {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/categoriesWithSubcategories');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/categoriesWithSubcategories`);
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }

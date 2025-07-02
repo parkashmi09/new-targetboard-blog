@@ -19,21 +19,18 @@ export default function LatestUpdates() {
 
   // Fetch latest blogs from API
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const fetchLatestBlogs = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/latest-blogs');
-        // console.log(response,"response");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/latest-blogs`);
         if (!response.ok) {
           throw new Error('Failed to fetch latest blogs');
         }
         const data = await response.json();
-        // Remove the console.log that's causing React render issues
-        // Ensure we handle the data properly as an array
-        setBlogs(Array.isArray(data) ? data : []);
+        setBlogs(data || []);
         setError(null);
       } catch (err) {
-        console.error('Error fetching blogs:', err);
+        console.error('Error fetching latest blogs:', err);
         setError(err.message);
         // Fallback to empty array if API fails
         setBlogs([]);
@@ -42,7 +39,7 @@ export default function LatestUpdates() {
       }
     };
 
-    fetchBlogs();
+    fetchLatestBlogs();
   }, []);
 
   // Auto-advance carousel - only after component is mounted

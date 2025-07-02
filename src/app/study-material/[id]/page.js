@@ -11,8 +11,6 @@ export default function StudyMaterialPage() {
   const [carousels, setCarousels] = useState([]);
   const [expandedCarousel, setExpandedCarousel] = useState(null);
   const [subCarousels, setSubCarousels] = useState({});
-  const [expandedSubCarousel, setExpandedSubCarousel] = useState(null);
-  const [studyMaterials, setStudyMaterials] = useState({});
   const [loading, setLoading] = useState(true);
   const [classesLoading, setClassesLoading] = useState(false);
   const [loadingStates, setLoadingStates] = useState({});
@@ -29,7 +27,7 @@ export default function StudyMaterialPage() {
         setLoading(true);
         
         // Fetch classes for this subcategory
-        const classesResponse = await fetch(`https://plankton-app-ankop.ondigitalocean.app/api/v1/subcategory/${id}/classes`);
+        const classesResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/subcategory/${id}/classes`);
         const classesData = await classesResponse.json();
         
         if (classesData.classes && classesData.classes.length > 0) {
@@ -38,13 +36,13 @@ export default function StudyMaterialPage() {
           setSelectedClass(classesData.classes[0]);
           
           // Fetch carousels for the first class
-          const carouselsResponse = await fetch(`https://plankton-app-ankop.ondigitalocean.app/api/v1/class/${classesData.classes[0]._id}/carousels`);
+          const carouselsResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/class/${classesData.classes[0]._id}/carousels`);
           const carouselsData = await carouselsResponse.json();
           setCarousels(carouselsData.carousels || []);
         }
         
         // Try to get subcategory name from categories API
-        const categoriesResponse = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/categoriesWithSubcategories');
+        const categoriesResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/categoriesWithSubcategories`);
         const categoriesData = await categoriesResponse.json();
         
         // Find the subcategory name
@@ -71,12 +69,10 @@ export default function StudyMaterialPage() {
     setSelectedClass(classItem);
     setClassesLoading(true);
     setExpandedCarousel(null);
-    setExpandedSubCarousel(null);
     setSubCarousels({});
-    setStudyMaterials({});
     
     try {
-      const carouselsResponse = await fetch(`https://plankton-app-ankop.ondigitalocean.app/api/v1/class/${classItem._id}/carousels`);
+      const carouselsResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/class/${classItem._id}/carousels`);
       const carouselsData = await carouselsResponse.json();
       setCarousels(carouselsData.carousels || []);
     } catch (error) {
@@ -111,12 +107,10 @@ export default function StudyMaterialPage() {
   const handleCarouselToggle = async (carousel) => {
     if (expandedCarousel === carousel._id) {
       setExpandedCarousel(null);
-      setExpandedSubCarousel(null);
       return;
     }
 
     setExpandedCarousel(carousel._id);
-    setExpandedSubCarousel(null);
     
     // Check if we already have sub-carousels loaded
     if (subCarousels[carousel._id]) {
@@ -126,7 +120,7 @@ export default function StudyMaterialPage() {
     // Fetch sub-carousels
     setLoadingStates(prev => ({ ...prev, [`carousel-${carousel._id}`]: true }));
     try {
-      const response = await fetch(`https://plankton-app-ankop.ondigitalocean.app/api/v1/get/carousels/${carousel._id}/sub`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/get/carousels/${carousel._id}/sub`);
       const data = await response.json();
       setSubCarousels(prev => ({
         ...prev,
@@ -143,38 +137,10 @@ export default function StudyMaterialPage() {
     }
   };
 
-  // Handle sub-carousel expansion
+  // Handle sub-carousel expansion - Navigate to nested page instead of showing materials
   const handleSubCarouselToggle = async (subCarousel) => {
-    if (expandedSubCarousel === subCarousel._id) {
-      setExpandedSubCarousel(null);
-      return;
-    }
-
-    setExpandedSubCarousel(subCarousel._id);
-    
-    // Check if we already have study materials loaded
-    if (studyMaterials[subCarousel._id]) {
-      return;
-    }
-
-    // Fetch study materials
-    setLoadingStates(prev => ({ ...prev, [`subcarousel-${subCarousel._id}`]: true }));
-    try {
-      const response = await fetch(`https://plankton-app-ankop.ondigitalocean.app/api/v1/get-study-material?subCarouselId=${subCarousel._id}`);
-      const data = await response.json();
-      setStudyMaterials(prev => ({
-        ...prev,
-        [subCarousel._id]: data || []
-      }));
-    } catch (error) {
-      console.error('Error fetching study materials:', error);
-      setStudyMaterials(prev => ({
-        ...prev,
-        [subCarousel._id]: []
-      }));
-    } finally {
-      setLoadingStates(prev => ({ ...prev, [`subcarousel-${subCarousel._id}`]: false }));
-    }
+    // Navigate to nested route with subCarousel ID
+    window.location.href = `/study-material/${id}/${subCarousel._id}`;
   };
 
   if (loading) {
@@ -344,7 +310,7 @@ export default function StudyMaterialPage() {
                                         onClick={() => handleSubCarouselToggle(subCarousel)}
                                         className="w-full px-6 sm:px-8 py-2.5 sm:py-3 text-left flex items-center justify-between hover:bg-opacity-30 transition-colors duration-200 border-t"
                                         style={{ 
-                                          backgroundColor: expandedSubCarousel === subCarousel._id ? '#FAF5E9' : '#FFFFFF',
+                                          backgroundColor: '#FFFFFF',
                                           borderColor: '#FAEBCE'
                                         }}
                                       >
@@ -362,70 +328,15 @@ export default function StudyMaterialPage() {
                                           </span>
                                         </div>
                                         <svg 
-                                          className={`w-3 h-3 sm:w-4 sm:h-4 transform transition-transform duration-200 flex-shrink-0 ${expandedSubCarousel === subCarousel._id ? 'rotate-180' : ''}`}
+                                          className="w-3 h-3 sm:w-4 sm:h-4 transform transition-transform duration-200 flex-shrink-0"
                                           style={{ color: '#003400' }}
                                           fill="none" 
                                           stroke="currentColor" 
                                           viewBox="0 0 24 24"
                                         >
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
                                       </button>
-
-                                      {/* Study Materials */}
-                                      {expandedSubCarousel === subCarousel._id && (
-                                        <div className="px-6 sm:px-10 py-3 sm:py-4 bg-white border-t" style={{ borderColor: '#FAEBCE' }}>
-                                          {loadingStates[`subcarousel-${subCarousel._id}`] ? (
-                                            <div className="text-center py-3 sm:py-4">
-                                              <div className="text-xs sm:text-sm" style={{ color: '#003400' }}>Loading study materials...</div>
-                                            </div>
-                                          ) : (
-                                            <>
-                                              {studyMaterials[subCarousel._id] && studyMaterials[subCarousel._id].length > 0 ? (
-                                                <div className="space-y-2 sm:space-y-3">
-                                                  {studyMaterials[subCarousel._id].map((material) => (
-                                                    <div key={material._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-lg border hover:shadow-md transition-shadow duration-200 space-y-3 sm:space-y-0" style={{ backgroundColor: '#FAF5E9', borderColor: '#FAEBCE' }}>
-                                                      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
-                                                        <div 
-                                                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-                                                          style={{ backgroundColor: '#003400' }}
-                                                        >
-                                                          <svg className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#FFFFFF' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                          </svg>
-                                                        </div>
-                                                        <div className="min-w-0 flex-1">
-                                                          <h4 className="font-semibold text-sm sm:text-base leading-tight" style={{ color: '#003400' }}>
-                                                            {material.name}
-                                                          </h4>
-                                                          <p className="text-xs sm:text-sm" style={{ color: '#1F1E1D' }}>
-                                                            Language: {material.language}
-                                                          </p>
-                                                        </div>
-                                                      </div>
-                                                      <a
-                                                        href={material.fileUrl}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="w-full sm:w-auto px-3 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm text-center transition-all duration-200 hover:transform hover:scale-105 flex-shrink-0"
-                                                        style={{ backgroundColor: '#003400', color: '#FFFFFF' }}
-                                                      >
-                                                        Download PDF
-                                                      </a>
-                                                    </div>
-                                                  ))}
-                                                </div>
-                                              ) : (
-                                                <div className="text-center py-4 sm:py-6">
-                                                  <div className="text-xs sm:text-sm" style={{ color: '#1F1E1D' }}>
-                                                    No study materials available for {subCarousel.name}
-                                                  </div>
-                                                </div>
-                                              )}
-                                            </>
-                                          )}
-                                        </div>
-                                      )}
                                     </div>
                                   ))}
                                 </div>

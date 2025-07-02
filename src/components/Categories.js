@@ -24,16 +24,17 @@ export default function Categories() {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://blog-backend-lv3o.onrender.com/api/v1/blog-category');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/blog-category`);
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }
-        const result = await response.json();
-        setCategories(result.data || []);
+        const data = await response.json();
+        setCategories(data || []);
         setError(null);
       } catch (err) {
         console.error('Error fetching categories:', err);
         setError(err.message);
+        // Fallback to empty array if API fails
         setCategories([]);
       } finally {
         setLoading(false);

@@ -10,7 +10,7 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`https://blog-backend-lv3o.onrender.com/api/v1/blogs/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/blogs/${id}`)
       .then(res => res.json())
       .then(data => {
         setBlog(data);
