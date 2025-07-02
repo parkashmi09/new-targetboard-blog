@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#FAF5E9"/>
+  
+  <!-- Main circle -->
+  <circle cx="256" cy="256" r="180" fill="#003400"/>
+  
+  <!-- Target rings -->
+  <circle cx="256" cy="256" r="130" fill="none" stroke="#FAEBCE" stroke-width="8"/>
+  <circle cx="256" cy="256" r="80" fill="none" stroke="#FAEBCE" stroke-width="6"/>
+  
+  <!-- Center circle -->
+  <circle cx="256" cy="256" r="25" fill="#FAEBCE"/>
+  
+  <!-- Letter T -->
+  <text x="256" y="276" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#FAEBCE" text-anchor="middle">T</text>
+</svg> 

@@ -14,12 +14,24 @@ export default function Hero() {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
+        console.log('Fetching banners from:', `${process.env.NEXT_PUBLIC_BASE_URL}/banners`);
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/banners`);
         if (response.ok) {
           const data = await response.json();
-          if (data.banners && data.banners.length > 0) {
+          console.log('Banner API response:', data);
+          // Handle direct array response
+          if (Array.isArray(data) && data.length > 0) {
+            console.log('Setting banners from direct array:', data);
+            setBanners(data);
+          } else if (data.banners && data.banners.length > 0) {
+            // Fallback for nested structure
+            console.log('Setting banners from nested structure:', data.banners);
             setBanners(data.banners);
+          } else {
+            console.log('No banners found in response');
           }
+        } else {
+          console.error('Failed to fetch banners, status:', response.status);
         }
       } catch (error) {
         console.error('Error fetching banners:', error);
@@ -106,6 +118,12 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, [banners.length]);
 
+  useEffect(() => {
+    console.log('Banners state updated:', banners);
+    console.log('Current banner index:', current);
+    console.log('Current banner:', banners[current]);
+  }, [banners, current]);
+
   // Pick content for current slide, fallback to first if not enough slidesContent
   const slide = slidesContent[current % slidesContent.length];
   const currentBanner = banners[current];
@@ -176,28 +194,34 @@ export default function Hero() {
             <div className="absolute top-4 right-4 z-30 bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">#1 Rated</div>
             
             {/* Banner Images */}
-            {banners.length > 0 && banners.map((banner, idx) => (
-              <img
-                src={banner.imageUrl}
-                alt={banner.title || 'Education Banner'}
-                key={banner._id}
-                className={`absolute w-full h-full object-cover inset-0 transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}
-                // style={{
-                //   backgroundImage: `url('${banner.imageUrl}'), url('https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80'), linear-gradient(135deg, #003400 0%, #006600 100%)`,
-                //   backgroundSize: 'cover',
-                //   backgroundPosition: 'center',
-                //   backgroundRepeat: 'no-repeat',
-                //   filter: 'brightness(0.95) saturate(1.1)'
-                // }}
-              />
-            ))}
-
-            {/* Fallback when no banners */}
-            {banners.length === 0 && (
+            {banners.length > 0 ? (
+              banners.map((banner, idx) => (
+                <div key={banner._id} className={`absolute inset-0 transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}>
+                  <img
+                    src={banner.imageUrl}
+                    alt={banner.title || 'Education Banner'}
+                    className="w-full h-full object-cover"
+                    onLoad={() => console.log(`✅ Banner ${idx} loaded:`, banner.imageUrl)}
+                    onError={(e) => {
+                      console.error(`❌ Banner ${idx} failed to load:`, banner.imageUrl);
+                      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMzQwMCIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+VGFyZ2V0IEJvYXJkPC90ZXh0Pgo8L3N2Zz4K';
+                    }}
+                    loading="lazy"
+                  />
+                  {/* Debug info */}
+                  <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                    Banner {idx + 1}/{banners.length} - {idx === current ? 'Active' : 'Hidden'}
+                  </div>
+                </div>
+              ))
+            ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-[#003400] to-green-600 flex items-center justify-center">
                 <div className="text-white text-center">
-                  <h3 className="text-2xl font-bold mb-2">Education Platform</h3>
+                  <h3 className="text-2xl font-bold mb-2">Target Board</h3>
                   <p className="text-lg">Your gateway to success</p>
+                  <p className="text-sm mt-2 opacity-75">
+                    {banners.length === 0 ? 'No banners loaded' : 'Loading banners...'}
+                  </p>
                 </div>
               </div>
             )}
