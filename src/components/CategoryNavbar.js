@@ -152,7 +152,7 @@ export default function CategoryNavbar() {
     <>
       <div className="bg-[#4A5D3A] shadow-sm border-b border-gray-200 fixed w-full top-16 z-[50]">
         <div className="max-w-full">
-          <div className="flex items-center overflow-x-auto scrollbar-hide py-2 px-4 space-x-2">
+          <div className="flex items-center mx-auto justify-center overflow-x-auto scrollbar-hide py-2 px-4 space-x-2">
             {categories.map((category, index) => (
               <div key={index} className="relative flex-shrink-0">
                 <button

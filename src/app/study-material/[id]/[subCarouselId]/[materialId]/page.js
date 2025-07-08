@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import PDFViewer from '@/components/PDFViewer';
 
 export default function PDFViewerPage() {
   const { id, subCarouselId, materialId } = useParams();
@@ -18,24 +19,24 @@ export default function PDFViewerPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Validate required parameters
         if (!subCarouselId || !materialId) {
           setError('Invalid material parameters');
           return;
         }
-        
+
         // Fetch all materials for navigation
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/get-study-material?subCarouselId=${subCarouselId}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const materials = await response.json();
         const materialsArray = Array.isArray(materials) ? materials : [];
-        
+
         setAllMaterials(materialsArray);
-        
+
         const foundMaterial = materialsArray.find(m => m && m._id === materialId);
         if (foundMaterial) {
           setMaterial(foundMaterial);
@@ -62,14 +63,14 @@ export default function PDFViewerPage() {
 
   const navigateToMaterial = (direction) => {
     if (!allMaterials || allMaterials.length <= 1) return;
-    
+
     let newIndex;
     if (direction === 'prev') {
       newIndex = currentIndex > 0 ? currentIndex - 1 : allMaterials.length - 1;
     } else {
       newIndex = currentIndex < allMaterials.length - 1 ? currentIndex + 1 : 0;
     }
-    
+
     const newMaterial = allMaterials[newIndex];
     if (newMaterial && newMaterial._id) {
       router.push(`/study-material/${id}/${subCarouselId}/${newMaterial._id}`);
@@ -78,14 +79,14 @@ export default function PDFViewerPage() {
 
   const navigatePage = (direction) => {
     if (!material?.fileUrl) return;
-    
+
     let newPage;
     if (direction === 'prev') {
       newPage = currentPage > 1 ? currentPage - 1 : currentPage;
     } else {
       newPage = currentPage + 1;
     }
-    
+
     if (newPage !== currentPage && newPage >= 1) {
       setCurrentPage(newPage);
     }
@@ -135,7 +136,7 @@ export default function PDFViewerPage() {
 
   const hasPreviousPage = currentPage > 1;
   const hasNextPage = true; // Always allow next since we don't know total pages
-  
+
   // Construct PDF URL with page parameter
   const pdfUrl = material.fileUrl + (currentPage > 1 ? `#page=${currentPage}` : '');
 
@@ -185,7 +186,7 @@ export default function PDFViewerPage() {
       <div className="relative flex-1" style={{ height: 'calc(100vh - 80px)' }}>
         {/* Left Navigation Arrow - Previous Page */}
         {hasPreviousPage && (
-          <button 
+          <button
             onClick={() => navigatePage('prev')}
             className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70 transition-all duration-200 flex items-center justify-center"
             title="Previous Page"
@@ -198,7 +199,7 @@ export default function PDFViewerPage() {
 
         {/* Right Navigation Arrow - Next Page */}
         {hasNextPage && (
-          <button 
+          <button
             onClick={() => navigatePage('next')}
             className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70 transition-all duration-200 flex items-center justify-center"
             title="Next Page"
@@ -209,141 +210,7 @@ export default function PDFViewerPage() {
           </button>
         )}
 
-        {/* PDF Container */}
-        <div className="flex items-center justify-center h-full px-20 py-8">
-          <div className="relative max-w-6xl w-full h-full bg-white shadow-2xl rounded-lg overflow-hidden">
-            <iframe
-              src={pdfUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 'none' }}
-              title={`PDF: ${material.name} - Page ${currentPage}`}
-              className="w-full h-full"
-              key={`${material._id}-${currentPage}`} // Force re-render when page changes
-            />
-          </div>
-        </div>
-
-        {/* Bottom Control Bar */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="bg-black bg-opacity-80 rounded-full px-6 py-3 flex items-center space-x-6">
-            {/* Grid View Button */}
-            <Link
-              href={`/study-material/${id}/${subCarouselId}`}
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-              title="View all materials"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-              </svg>
-            </Link>
-
-            {/* Previous Page */}
-            {hasPreviousPage && (
-              <button 
-                onClick={() => navigatePage('prev')}
-                className="text-white hover:text-gray-300 transition-colors duration-200"
-                title="Previous page"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-            )}
-
-            {/* Page Input */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                min="1"
-                value={currentPage}
-                onChange={(e) => {
-                  const page = parseInt(e.target.value);
-                  if (page >= 1) {
-                    setCurrentPage(page);
-                  }
-                }}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    const page = parseInt(e.target.value);
-                    goToPage(page);
-                  }
-                }}
-                className="w-16 px-2 py-1 text-center text-black rounded border-none focus:outline-none focus:ring-2 focus:ring-white"
-                style={{ backgroundColor: 'white' }}
-              />
-              <span className="text-white text-sm">/ Page</span>
-            </div>
-
-            {/* Next Page */}
-            {hasNextPage && (
-              <button 
-                onClick={() => navigatePage('next')}
-                className="text-white hover:text-gray-300 transition-colors duration-200"
-                title="Next page"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            )}
-
-            {/* Zoom Out */}
-            <button className="text-white hover:text-gray-300 transition-colors duration-200" title="Zoom out">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-              </svg>
-            </button>
-
-            {/* Zoom In */}
-            <button className="text-white hover:text-gray-300 transition-colors duration-200" title="Zoom in">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-              </svg>
-            </button>
-
-            {/* Fullscreen */}
-            <button 
-              onClick={() => window.open(pdfUrl, '_blank')}
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-              title="Open in new tab"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              </svg>
-            </button>
-
-            {/* Material Navigation */}
-            {allMaterials && allMaterials.length > 1 && (
-              <>
-                <div className="h-6 w-px bg-gray-400"></div>
-                <div className="flex items-center space-x-2">
-                  <button 
-                    onClick={() => navigateToMaterial('prev')}
-                    className="text-white hover:text-gray-300 transition-colors duration-200"
-                    title="Previous material"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <span className="text-white text-sm">
-                    {currentIndex + 1}/{allMaterials.length}
-                  </span>
-                  <button 
-                    onClick={() => navigateToMaterial('next')}
-                    className="text-white hover:text-gray-300 transition-colors duration-200"
-                    title="Next material"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        <PDFViewer pdfUrl={pdfUrl} title={material.name} />
       </div>
     </div>
   );
