@@ -7,7 +7,6 @@ import Logo from '../assets/Logo.png';
 import Image from 'next/image';
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e) => {

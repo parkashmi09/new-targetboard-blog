@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function BlogDetailPage() {
@@ -26,7 +27,15 @@ export default function BlogDetailPage() {
       <div className="max-w-3xl mx-auto py-12 px-4">
         <Link href="/" className="inline-block mb-8 text-[#003400] font-semibold hover:underline">← Back to Home</Link>
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <img src={blog.previewImage} alt={blog.title} className="w-full rounded-xl mb-6 max-h-96 object-cover" style={{ backgroundColor: '#FAEBCE' }} />
+          <div className="relative w-full h-[400px] mb-6">
+            <Image
+              src={blog.previewImage}
+              alt={blog.title}
+              fill
+              className="object-cover rounded-lg"
+              priority
+            />
+          </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4 font-jakarta" style={{ color: '#003400' }}>{blog.title}</h1>
           <div className="mb-4 flex flex-wrap items-center gap-4 text-gray-500 text-sm">
             <span>By <span className="font-semibold text-[#003400]">{blog.authorName}</span></span>

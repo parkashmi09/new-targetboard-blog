@@ -1,7 +1,7 @@
 'use client';
 
 import { GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
-// import Image from 'next/image';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function Hero() {
@@ -197,16 +197,18 @@ export default function Hero() {
             {banners.length > 0 ? (
               banners.map((banner, idx) => (
                 <div key={banner._id} className={`absolute inset-0 transition-opacity duration-500 ${idx === current && fade ? 'opacity-100' : 'opacity-0'}`}>
-                  <img
+                  <Image
                     src={banner.imageUrl}
                     alt={banner.title || 'Education Banner'}
+                    width={600}
+                    height={400}
                     className="w-full h-full object-cover"
                     onLoad={() => console.log(`✅ Banner ${idx} loaded:`, banner.imageUrl)}
                     onError={(e) => {
                       console.error(`❌ Banner ${idx} failed to load:`, banner.imageUrl);
                       e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMzQwMCIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+VGFyZ2V0IEJvYXJkPC90ZXh0Pgo8L3N2Zz4K';
                     }}
-                    loading="lazy"
+                    priority
                   />
                   {/* Debug info */}
                   <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">

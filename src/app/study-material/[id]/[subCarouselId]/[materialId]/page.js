@@ -1,15 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import PDFViewer from '@/components/PDFViewer';
 
 export default function PDFViewerPage() {
   const { id, subCarouselId, materialId } = useParams();
-  const router = useRouter();
   const [material, setMaterial] = useState(null);
-  const [allMaterials, setAllMaterials] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,14 +32,9 @@ export default function PDFViewerPage() {
         const materials = await response.json();
         const materialsArray = Array.isArray(materials) ? materials : [];
 
-        setAllMaterials(materialsArray);
-
         const foundMaterial = materialsArray.find(m => m && m._id === materialId);
         if (foundMaterial) {
           setMaterial(foundMaterial);
-          // Find current material index for navigation
-          const index = materialsArray.findIndex(m => m && m._id === materialId);
-          setCurrentIndex(index >= 0 ? index : 0);
           // Reset to first page when material changes
           setCurrentPage(1);
         } else {
@@ -61,22 +53,6 @@ export default function PDFViewerPage() {
     }
   }, [materialId, subCarouselId]);
 
-  const navigateToMaterial = (direction) => {
-    if (!allMaterials || allMaterials.length <= 1) return;
-
-    let newIndex;
-    if (direction === 'prev') {
-      newIndex = currentIndex > 0 ? currentIndex - 1 : allMaterials.length - 1;
-    } else {
-      newIndex = currentIndex < allMaterials.length - 1 ? currentIndex + 1 : 0;
-    }
-
-    const newMaterial = allMaterials[newIndex];
-    if (newMaterial && newMaterial._id) {
-      router.push(`/study-material/${id}/${subCarouselId}/${newMaterial._id}`);
-    }
-  };
-
   const navigatePage = (direction) => {
     if (!material?.fileUrl) return;
 
@@ -92,21 +68,22 @@ export default function PDFViewerPage() {
     }
   };
 
-  const goToPage = (pageNumber) => {
-    if (pageNumber >= 1 && material?.fileUrl) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
     if (material?.fileUrl) {
-      const link = document.createElement('a');
-      link.href = material.fileUrl;
-      link.download = `${material.name || 'document'}.pdf`;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      try {
+        const response = await fetch(material.fileUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${material.name || 'document'}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error downloading PDF:', error);
+      }
     }
   };
 
