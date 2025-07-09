@@ -1,174 +1,330 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { Trophy, MapPin, Calendar, Hash, Target, Star, Award, Medal } from 'lucide-react'
 
-export default function ResultsPage() {
-  const [selectedCategory, setSelectedCategory] = useState('CBSE 12th');
+const categories = [
+  { id: "all", label: "All Boards", icon: Award },
+  { id: "bihar_board", label: "Bihar Board", icon: Trophy },
+  { id: "up_board", label: "UP Board", icon: Medal },
+]
 
-  const categories = [
-    'CBSE 10th',
-    'ICSE 10th',
-    'CBSE 12th',
-    'CA',
-    'MBA',
-    'SSC'
-  ];
+export default function Component() {
+  const [activeCategory, setActiveCategory] = useState("all")
+  const [toppers, setToppers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const toppers = [
-    {
-      id: 1,
-      rank: 'RANK-1',
-      year: '2025',
-      type: 'BIHAR TOPPER',
-      rollNo: '12345',
-      marks: '98.8%',
-      district: 'Patna',
-      image: '/student-placeholder.jpg'
-    },
-    {
-      id: 2,
-      rank: 'RANK-1',
-      year: '2025',
-      type: 'BIHAR TOPPER',
-      rollNo: '12346',
-      marks: '98.6%',
-      district: 'Gaya',
-      image: '/student-placeholder.jpg'
-    },
-    {
-      id: 3,
-      rank: 'RANK-1',
-      year: '2025',
-      type: 'BIHAR TOPPER',
-      rollNo: '12347',
-      marks: '98.4%',
-      district: 'Muzaffarpur',
-      image: '/student-placeholder.jpg'
-    },
-    {
-      id: 4,
-      rank: 'RANK-1',
-      year: '2025',
-      type: 'BIHAR TOPPER',
-      rollNo: '12348',
-      marks: '98.2%',
-      district: 'Bhagalpur',
-      image: '/student-placeholder.jpg'
+  useEffect(() => {
+    const fetchToppers = async () => {
+      try {
+        setLoading(true)
+
+        /* ------------------------------------------------------------------
+         * Build a safe URL:
+         *  – If NEXT_PUBLIC_BASE_URL is set   → `${BASE_URL}/results`
+         *  – Otherwise (local preview)        → `/results`
+         * ---------------------------------------------------------------- */
+        const base = process.env.NEXT_PUBLIC_BASE_URL?.trim() || ""
+        const url = base ? `${base.replace(/\/+$/, "")}/results` : "/api/results"
+
+        const response = await fetch(url)
+
+        if (!response.ok) {
+          throw new Error(`Request failed – ${response.status} ${response.statusText}`)
+        }
+
+        /* ------------------------------------------------------------------
+         * Only parse as JSON when the response actually IS JSON.
+         * If not, throw an explicit error so we don’t hit “Unexpected token <”.
+         * ---------------------------------------------------------------- */
+        const contentType = response.headers.get("content-type") ?? ""
+        if (!contentType.includes("application/json")) {
+          const text = await response.text()
+          throw new Error("Server returned non-JSON:\n" + text.slice(0, 120) + "…")
+        }
+
+        const data = await response.json()
+        setToppers(data)
+      } catch (err) {
+        console.error("Error fetching results:", err)
+        setError(err instanceof Error ? err.message : "Failed to load results")
+      } finally {
+        setLoading(false)
+      }
     }
-  ];
+
+    fetchToppers()
+  }, [])
+
+  const getInitials = (name) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+  }
+
+  const getBoardName = (topper) => {
+    if (topper.category?.name) {
+      return topper.category.name
+    }
+    // Fallback logic based on state
+    if (topper.state?.toLowerCase().includes("bihar")) {
+      return "Bihar Board"
+    }
+    if (topper.state?.toLowerCase().includes("up")) {
+      return "UP Board"
+    }
+    return "Other Board"
+  }
+
+  const filteredToppers = toppers.filter((topper) => {
+    if (activeCategory === "all") return true
+
+    const boardName = getBoardName(topper)
+
+    if (activeCategory === "bihar_board") {
+      return boardName === "Bihar Board"
+    }
+    if (activeCategory === "up_board") {
+      return boardName === "UP Board" || boardName === "Up Board"
+    }
+    return true
+  })
+
+  const getRankColor = (rank) => {
+    if (rank === 1) return "from-yellow-400 to-yellow-600"
+    if (rank === 2) return "from-gray-300 to-gray-500"
+    if (rank === 3) return "from-orange-400 to-orange-600"
+    return "from-blue-400 to-blue-600"
+  }
+
+  const getRankIcon = (rank) => {
+    if (rank <= 3) return <Trophy className="w-4 h-4" />
+    return <Star className="w-4 h-4" />
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#faf5e9] to-[#f5efe0]">
+        <div className="text-center">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-20 w-20 border-4 border-[#003400]/20 border-t-[#003400] mx-auto"></div>
+            <Trophy className="w-8 h-8 text-[#003400] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          <p className="mt-4 text-[#003400] font-semibold">Loading Toppers...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#faf5e9] to-[#f5efe0]">
+        <div className="text-center bg-white p-8 rounded-2xl shadow-xl">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Target className="w-8 h-8 text-red-500" />
+          </div>
+          <h3 className="text-xl font-bold text-[#003400] mb-2">Oops! Something went wrong</h3>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#FAF5E9' }}>
-      {/* Category Tags */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex flex-wrap gap-3 justify-center">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedCategory === category
-                  ? 'bg-[#003400] text-white'
-                  : 'bg-white text-[#003400] border border-[#003400]'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Results Grid */}
+    <div className="min-h-screen bg-gradient-to-br from-[#faf5e9] to-[#f5efe0] p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {toppers.map((topper) => (
-            <div
-              key={topper.id}
-              className="bg-white rounded-lg overflow-hidden shadow-md relative transform hover:scale-[1.02] transition-all duration-300"
-              style={{ 
-                border: '1px solid #FAEBCE'
-              }}
-            >
-              {/* Year Tag */}
-              <div 
-                className="absolute top-[-10px] left-[-20px] z-10 bg-[#FF0000] text-white"
-                style={{
-                  transform: 'rotate(-55deg) translateX(-27%) translateY(-10%)',
-                  padding: '10px 50px 8px',
-                  fontSize: '0.9rem',
-                  fontWeight: '600'
-                }}
-              >
-                {topper.year}
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-r from-[#003400] to-[#004400] rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
+                <Trophy className="w-8 h-8 text-[#faf5e9]" />
               </div>
-
-              {/* Topper Type */}
-              <div 
-                className="bg-[#003400] text-white text-center py-2 text-sm font-bold"
-              >
-                {topper.type}
-              </div>
-
-              {/* Student Image */}
-              <div className="w-28 h-28 mx-auto mt-4 mb-2 rounded-full overflow-hidden border-2 border-[#003400]">
-                <div className="w-full h-full bg-[#003400] rounded-full flex items-center justify-center">
-                  <Image
-                    src={topper.image}
-                    alt="Student"
-                    width={112}
-                    height={112}
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-
-              {/* Rank */}
-              <div className="text-center text-2xl font-bold mb-4 text-[#003400]">
-                {topper.rank}
-              </div>
-
-              {/* Details */}
-              <div className="px-4 py-3 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-[#666666]">Roll No-</span>
-                  <span className="text-sm font-medium text-[#003400]">{topper.rollNo}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-[#666666]">Marks-</span>
-                  <span className="text-sm font-medium text-[#003400]">{topper.marks}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-[#666666]">District-</span>
-                  <span className="text-sm font-medium text-[#003400]">{topper.district}</span>
-                </div>
-              </div>
-
-              {/* More Details Button */}
-              <div className="p-3">
-                <button
-                  className="w-full bg-[#003400] text-white py-2 rounded-md hover:bg-[#004d00] transition-colors flex items-center justify-center gap-2"
-                >
-                  MORE DETAILS
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-[#faf5e9] rounded-full flex items-center justify-center shadow-md">
+                <Star className="w-3 h-3 text-[#003400]" />
               </div>
             </div>
-          ))}
+            <div>
+              <h1 className="text-5xl font-black bg-gradient-to-r from-[#003400] via-[#004400] to-[#005500] bg-clip-text text-transparent">
+                India Toppers 2025
+              </h1>
+              <div className="h-1 w-32 bg-gradient-to-r from-[#003400] to-[#004400] rounded-full mx-auto mt-2"></div>
+            </div>
+          </div>
+          <p className="text-[#003400] text-xl font-medium max-w-2xl mx-auto">
+            🎉 Celebrating Academic Excellence Across All States 🏆
+          </p>
         </div>
+
+        {/* Category Filters */}
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {categories.map((category) => {
+            const IconComponent = category.icon
+            return (
+              <button
+                key={category.id}
+                className={`group flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 transform hover:scale-105 ${
+                  activeCategory === category.id
+                    ? "bg-gradient-to-r from-[#003400] to-[#004400] text-[#faf5e9] shadow-xl scale-105"
+                    : "bg-white text-[#003400] shadow-lg hover:shadow-xl border border-[#003400]/10 hover:border-[#003400]"
+                }`}
+                onClick={() => setActiveCategory(category.id)}
+              >
+                <IconComponent
+                  className={`w-4 h-4 transition-transform group-hover:rotate-12 ${
+                    activeCategory === category.id ? "text-[#faf5e9]" : "text-[#003400]"
+                  }`}
+                />
+                {category.label}
+                {activeCategory === category.id && (
+                  <div className="w-2 h-2 bg-[#faf5e9] rounded-full animate-pulse"></div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Results Count */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+            <Award className="w-4 h-4 text-[#003400]" />
+            <span className="font-semibold text-[#003400]">{filteredToppers.length} Toppers Found</span>
+          </div>
+        </div>
+
+        {/* Toppers Grid */}
+        {filteredToppers.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 bg-[#003400]/5 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trophy className="w-12 h-12 text-[#003400]/40" />
+            </div>
+            <h3 className="text-xl font-bold text-[#003400] mb-2">No Toppers Found</h3>
+            <p className="text-[#003400]/60">Try selecting a different category</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredToppers.map((topper, index) => (
+              <div
+                key={topper._id}
+                className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* Rank Badge */}
+                <div className="absolute top-4 left-4 z-20">
+                  <div
+                    className={`bg-gradient-to-r ${getRankColor(topper.rank)} text-white px-3 py-1 rounded-full font-bold text-sm shadow-lg flex items-center gap-1`}
+                  >
+                    {getRankIcon(topper.rank)}
+                    RANK {topper.rank}
+                  </div>
+                </div>
+
+                {/* Year Badge */}
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="bg-gradient-to-r from-[#003400] to-[#004400] text-[#faf5e9] px-3 py-1 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {topper.year}
+                  </div>
+                </div>
+
+                {/* Header */}
+                <div className="relative bg-gradient-to-r from-[#003400] to-[#004400] p-6 pb-8">
+                  <div className="text-center">
+                    <h3 className="font-black text-[#faf5e9] text-lg tracking-wide mb-2">
+                      {getBoardName(topper).toUpperCase()}
+                    </h3>
+                    <div className="text-[#faf5e9]/90 text-sm font-medium">{topper.state.toUpperCase()} TOPPER</div>
+                  </div>
+                </div>
+
+                {/* Avatar */}
+                <div className="relative -mt-6 px-6">
+                  <div className="w-32 h-32 mx-auto rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-[#faf5e9] to-white">
+                    {topper.image ? (
+                      <Image
+                        src={topper.image || "/placeholder.svg"}
+                        alt={`${topper.state} Topper`}
+                        width={116}
+                        height={116}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#003400] to-[#004400] flex items-center justify-center">
+                        <span className="text-xl font-bold text-[#faf5e9]">{getInitials(topper.state)}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 pt-4">
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-[#faf5e9] to-white p-3 rounded-xl border border-[#003400]/10">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Hash className="w-3 h-3 text-[#003400]" />
+                        <span className="text-[#003400] text-xs font-semibold">Roll No</span>
+                      </div>
+                      <div className="font-bold text-[#003400] text-sm">{topper.rollNo}</div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-[#faf5e9] to-white p-3 rounded-xl border border-[#003400]/10">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Target className="w-3 h-3 text-[#003400]" />
+                        <span className="text-[#003400] text-xs font-semibold">Marks</span>
+                      </div>
+                      <div className="font-bold text-[#003400] text-sm">{topper.marks}</div>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="bg-gradient-to-br from-[#faf5e9] to-white p-3 rounded-xl border border-[#003400]/10 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-[#003400]" />
+                        <span className="text-[#003400] text-xs font-semibold">District</span>
+                      </div>
+                      <div className="font-bold text-[#003400] text-sm">{topper.district}</div>
+                    </div>
+                  </div>
+
+                  {/* Action Button */}
+                  <button className="w-full bg-gradient-to-r from-[#003400] to-[#004400] hover:from-[#004400] hover:to-[#005500] text-[#faf5e9] font-bold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm flex items-center justify-center gap-2 group">
+                    <Award className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                    VIEW DETAILS
+                  </button>
+                </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#003400] to-[#004400] rounded-full opacity-10 transform translate-x-10 -translate-y-10"></div>
+                <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-br from-[#003400] to-[#004400] rounded-full opacity-10 transform -translate-x-8 translate-y-8"></div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      <style jsx>{`
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .animate-fade-in {
+        animation: fade-in 0.6s ease-out forwards;
+        opacity: 0;
+      }
+    `}</style>
     </div>
-  );
-} 
+  )
+}
