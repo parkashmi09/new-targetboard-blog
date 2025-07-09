@@ -7,16 +7,18 @@ export default function StayConnected() {
     const socialLinks = [
         { 
             name: 'WhatsApp', 
+            href: 'https://whatsapp.com/channel/0029Va8cGvgD8SE4gSH4pF35',
             color: '#25D366', 
             bgClass: 'bg-green-500',
             icon: (
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.031-.967-.273-.099-.472-.148-.67.15-.197.297-.767.967-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.71.306 1.263.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                    <path d="M20.4054 3.4875C18.1607 1.2375 15.1714 0 11.9946 0C5.4375 0 0.101786 5.33571 0.101786 11.8929C0.101786 13.9875 0.648214 16.0339 1.69286 17.8393L0 24L6.30536 22.3393C8.04107 23.2982 9.99643 23.8071 11.9893 23.8071H11.9946C18.5464 23.8071 24 18.4714 24 11.9143C24 8.73214 22.65 5.7375 20.4054 3.4875ZM11.9946 21.8036C10.2161 21.8036 8.47500 21.3161 6.96429 20.3893L6.60357 20.1696L2.86071 21.1607L3.87321 17.5179L3.63214 17.1429C2.61964 15.5732 2.08393 13.7571 2.08393 11.8929C2.08393 6.44464 6.54643 2.00357 12 2.00357C14.6411 2.00357 17.1214 3.02679 19.0071 4.91786C20.8929 6.80893 21.9643 9.28928 21.9589 11.9143C21.9589 17.3679 17.4429 21.8036 11.9946 21.8036ZM17.4161 14.3839C17.1214 14.2339 15.6589 13.5161 15.3857 13.4143C15.1125 13.3179 14.9143 13.2696 14.7161 13.5643C14.5179 13.8589 13.95 14.5286 13.7732 14.7268C13.6018 14.925 13.425 14.9464 13.1304 14.7964C11.3839 13.9232 10.2375 13.2375 9.08571 11.2607C8.78036 10.7357 9.39107 10.7732 9.95357 9.64821C10.0554 9.45 10.0071 9.27857 9.93214 9.12857C9.85714 8.97857 9.26786 7.51607 9.02143 6.92143C8.78036 6.34286 8.53393 6.42321 8.35179 6.41250C8.18036 6.40179 7.98214 6.40179 7.78393 6.40179C7.58571 6.40179 7.26429 6.47679 6.99107 6.76607C6.71786 7.06071 5.94643 7.77857 5.94643 9.24107C5.94643 10.7036 7.0125 12.1179 7.16250 12.3161C7.31786 12.5143 9.25714 15.5196 12.2357 16.8214C14.1214 17.6357 14.8714 17.7214 15.8357 17.5821C16.4036 17.4964 17.5714 16.8589 17.8179 16.1679C18.0643 15.4768 18.0643 14.8821 17.9893 14.7268C17.9196 14.5607 17.7161 14.4643 17.4161 14.3839Z" />
                 </svg>
             )
         },
         { 
             name: 'Telegram', 
+            href: 'https://t.me/TARGET_BOARD_BSEB',
             color: '#0088CC', 
             bgClass: 'bg-blue-500',
             icon: (
@@ -27,6 +29,7 @@ export default function StayConnected() {
         },
         { 
             name: 'Instagram', 
+            href: 'https://www.instagram.com/targetboardofficial?igsh=MWdteTRpYmViNTdvZA==',
             color: '#E4405F', 
             bgClass: 'bg-pink-500',
             icon: (
@@ -36,52 +39,13 @@ export default function StayConnected() {
             )
         },
         { 
-            name: 'Facebook', 
-            color: '#1877F2', 
-            bgClass: 'bg-blue-600',
-            icon: (
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-            )
-        },
-        { 
             name: 'YouTube', 
+            href: 'https://youtube.com/@targetboard?si=WwMvnrP6j7AQIDuG',
             color: '#FF0000', 
             bgClass: 'bg-red-500',
             icon: (
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                </svg>
-            )
-        },
-        { 
-            name: 'LinkedIn', 
-            color: '#0A66C2', 
-            bgClass: 'bg-blue-700',
-            icon: (
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-            )
-        },
-        { 
-            name: 'Twitter', 
-            color: '#1DA1F2', 
-            bgClass: 'bg-blue-400',
-            icon: (
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
-            )
-        },
-        { 
-            name: 'Pinterest', 
-            color: '#E60023', 
-            bgClass: 'bg-red-600',
-            icon: (
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.097.118.112.222.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-12.013C24.007 5.367 18.641.001 12.017.001z"/>
                 </svg>
             )
         }
@@ -180,12 +144,14 @@ export default function StayConnected() {
 
                                 {/* Right Side - Social Media Grid */}
                                 <div className="relative">
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
                                         {socialLinks.map((social, index) => (
                                             <a
                                                 key={social.name}
-                                                href="#"
-                                                className="group relative flex items-center justify-center p-4 bg-white rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl"
+                                                href={social.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group relative flex items-center justify-center p-6 bg-white rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl"
                                                 style={{
                                                     animationDelay: `${index * 100}ms`,
                                                     boxShadow: hoveredSocial === social.name ? `0 20px 40px ${social.color}20` : undefined
@@ -200,9 +166,9 @@ export default function StayConnected() {
                                                 ></div>
                                                 
                                                 {/* Icon Container */}
-                                                <div className="relative flex flex-col items-center space-y-2">
+                                                <div className="relative flex flex-col items-center space-y-3">
                                                     <div 
-                                                        className="p-3 rounded-xl transition-all duration-300 group-hover:scale-110"
+                                                        className="p-4 rounded-xl transition-all duration-300 group-hover:scale-110"
                                                         style={{ 
                                                             backgroundColor: `${social.color}15`,
                                                             color: social.color
@@ -225,34 +191,40 @@ export default function StayConnected() {
                                                     className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl"
                                                     style={{ backgroundColor: social.color }}
                                                 ></div>
+
+                                                {/* Decorative Corner */}
+                                                <div 
+                                                    className="absolute top-0 right-0 w-8 h-8 transform translate-x-1/2 -translate-y-1/2 rotate-45 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                                                    style={{ backgroundColor: social.color }}
+                                                ></div>
                                             </a>
                                         ))}
-
-                                        {/* "See All" Button */}
-                                        <a
-                                            href="#"
-                                            className="group col-span-2 sm:col-span-1 flex items-center justify-center p-4 rounded-2xl border-2 border-dashed transition-all duration-300 hover:scale-105 hover:-translate-y-2"
-                                            style={{ 
-                                                borderColor: '#FAEBCE',
-                                                backgroundColor: 'rgba(250, 235, 206, 0.1)'
-                                            }}
-                                        >
-                                            <div className="flex items-center space-x-2" style={{ color: '#FAEBCE' }}>
-                                                <span className="font-semibold">See All</span>
-                                                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                </svg>
-                                            </div>
-                                        </a>
                                     </div>
 
-                                    {/* Floating Action Button */}
-                                    <div className="absolute -bottom-6 -right-6 hidden lg:block">
-                                        <button className="w-16 h-16 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-300 animate-bounce" style={{ backgroundColor: '#FAEBCE' }}>
-                                            <svg className="w-8 h-8 mx-auto" style={{ color: '#003400' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                            </svg>
-                                        </button>
+                                    {/* Enhanced Floating Action Button */}
+                                    <div className="absolute -bottom-8 -right-8 hidden lg:block">
+                                        <div className="relative">
+                                            <div className="absolute inset-0 rounded-full animate-ping opacity-20" style={{ backgroundColor: '#003400' }}></div>
+                                            <button 
+                                                className="relative w-16 h-16 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-300" 
+                                                style={{ backgroundColor: '#FAEBCE' }}
+                                            >
+                                                <svg 
+                                                    className="w-8 h-8 mx-auto transform -rotate-45" 
+                                                    style={{ color: '#003400' }} 
+                                                    fill="none" 
+                                                    stroke="currentColor" 
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path 
+                                                        strokeLinecap="round" 
+                                                        strokeLinejoin="round" 
+                                                        strokeWidth={2} 
+                                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" 
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

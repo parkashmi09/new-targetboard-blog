@@ -4,30 +4,54 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Trophy, MapPin, Calendar, Hash, Target, Star, Award, Medal } from 'lucide-react'
 
-const categories = [
-  { id: "all", label: "All Boards", icon: Award },
-  { id: "bihar_board", label: "Bihar Board", icon: Trophy },
-  { id: "up_board", label: "UP Board", icon: Medal },
-]
-
 export default function Component() {
   const [activeCategory, setActiveCategory] = useState("all")
+  const [categories, setCategories] = useState([])
   const [toppers, setToppers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('https://clownfish-app-q4s7f.ondigitalocean.app/api/v1/result-categories')
+        if (!response.ok) {
+          throw new Error(`Failed to fetch categories: ${response.status}`)
+        }
+        const data = await response.json()
+        setCategories(data)
+      } catch (err) {
+        console.error("Error fetching categories:", err)
+        // Fallback to default categories if API fails
+        setCategories([
+          { _id: "all", name: "All Boards" },
+          { _id: "bihar_board", name: "Bihar Board" },
+          { _id: "up_board", name: "UP Board" },
+          { _id: "mp_board", name: "MP Board" }
+        ])
+      }
+    }
+
+    fetchCategories()
+  }, [])
+
+  // Fetch results based on selected category
   useEffect(() => {
     const fetchToppers = async () => {
       try {
         setLoading(true)
+        setError(null)
 
-        /* ------------------------------------------------------------------
-         * Build a safe URL:
-         *  – If NEXT_PUBLIC_BASE_URL is set   → `${BASE_URL}/results`
-         *  – Otherwise (local preview)        → `/results`
-         * ---------------------------------------------------------------- */
-        const base = process.env.NEXT_PUBLIC_BASE_URL?.trim() || ""
-        const url = base ? `${base.replace(/\/+$/, "")}/results` : "/api/results"
+        let url = 'https://clownfish-app-q4s7f.ondigitalocean.app/api/v1/results'
+        
+        // Add category filter if not "all"
+        if (activeCategory !== "all") {
+          const selectedCategory = categories.find(cat => cat._id === activeCategory)
+          if (selectedCategory) {
+            url += `?category=${selectedCategory._id}`
+          }
+        }
 
         const response = await fetch(url)
 
@@ -35,10 +59,6 @@ export default function Component() {
           throw new Error(`Request failed – ${response.status} ${response.statusText}`)
         }
 
-        /* ------------------------------------------------------------------
-         * Only parse as JSON when the response actually IS JSON.
-         * If not, throw an explicit error so we don’t hit “Unexpected token <”.
-         * ---------------------------------------------------------------- */
         const contentType = response.headers.get("content-type") ?? ""
         if (!contentType.includes("application/json")) {
           const text = await response.text()
@@ -55,8 +75,10 @@ export default function Component() {
       }
     }
 
-    fetchToppers()
-  }, [])
+    if (categories.length > 0) {
+      fetchToppers()
+    }
+  }, [activeCategory, categories])
 
   const getInitials = (name) => {
     return name
@@ -77,22 +99,11 @@ export default function Component() {
     if (topper.state?.toLowerCase().includes("up")) {
       return "UP Board"
     }
+    if (topper.state?.toLowerCase().includes("mp")) {
+      return "MP Board"
+    }
     return "Other Board"
   }
-
-  const filteredToppers = toppers.filter((topper) => {
-    if (activeCategory === "all") return true
-
-    const boardName = getBoardName(topper)
-
-    if (activeCategory === "bihar_board") {
-      return boardName === "Bihar Board"
-    }
-    if (activeCategory === "up_board") {
-      return boardName === "UP Board" || boardName === "Up Board"
-    }
-    return true
-  })
 
   const getRankColor = (rank) => {
     if (rank === 1) return "from-yellow-400 to-yellow-600"
@@ -104,6 +115,13 @@ export default function Component() {
   const getRankIcon = (rank) => {
     if (rank <= 3) return <Trophy className="w-4 h-4" />
     return <Star className="w-4 h-4" />
+  }
+
+  const getCategoryIcon = (categoryName) => {
+    if (categoryName.toLowerCase().includes("bihar")) return Trophy
+    if (categoryName.toLowerCase().includes("up")) return Medal
+    if (categoryName.toLowerCase().includes("mp")) return Award
+    return Award
   }
 
   if (loading) {
@@ -162,25 +180,46 @@ export default function Component() {
 
         {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {/* All Boards Option */}
+          <button
+            className={`group flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 transform hover:scale-105 ${
+              activeCategory === "all"
+                ? "bg-gradient-to-r from-[#003400] to-[#004400] text-[#faf5e9] shadow-xl scale-105"
+                : "bg-white text-[#003400] shadow-lg hover:shadow-xl border border-[#003400]/10 hover:border-[#003400]"
+            }`}
+            onClick={() => setActiveCategory("all")}
+          >
+            <Award
+              className={`w-4 h-4 transition-transform group-hover:rotate-12 ${
+                activeCategory === "all" ? "text-[#faf5e9]" : "text-[#003400]"
+              }`}
+            />
+            All Boards
+            {activeCategory === "all" && (
+              <div className="w-2 h-2 bg-[#faf5e9] rounded-full animate-pulse"></div>
+            )}
+          </button>
+
+          {/* Dynamic Categories from API */}
           {categories.map((category) => {
-            const IconComponent = category.icon
+            const IconComponent = getCategoryIcon(category.name)
             return (
               <button
-                key={category.id}
+                key={category._id}
                 className={`group flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 transform hover:scale-105 ${
-                  activeCategory === category.id
+                  activeCategory === category._id
                     ? "bg-gradient-to-r from-[#003400] to-[#004400] text-[#faf5e9] shadow-xl scale-105"
                     : "bg-white text-[#003400] shadow-lg hover:shadow-xl border border-[#003400]/10 hover:border-[#003400]"
                 }`}
-                onClick={() => setActiveCategory(category.id)}
+                onClick={() => setActiveCategory(category._id)}
               >
                 <IconComponent
                   className={`w-4 h-4 transition-transform group-hover:rotate-12 ${
-                    activeCategory === category.id ? "text-[#faf5e9]" : "text-[#003400]"
+                    activeCategory === category._id ? "text-[#faf5e9]" : "text-[#003400]"
                   }`}
                 />
-                {category.label}
-                {activeCategory === category.id && (
+                {category.name}
+                {activeCategory === category._id && (
                   <div className="w-2 h-2 bg-[#faf5e9] rounded-full animate-pulse"></div>
                 )}
               </button>
@@ -192,12 +231,12 @@ export default function Component() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
             <Award className="w-4 h-4 text-[#003400]" />
-            <span className="font-semibold text-[#003400]">{filteredToppers.length} Toppers Found</span>
+            <span className="font-semibold text-[#003400]">{toppers.length} Toppers Found</span>
           </div>
         </div>
 
         {/* Toppers Grid */}
-        {filteredToppers.length === 0 ? (
+        {toppers.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-[#003400]/5 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trophy className="w-12 h-12 text-[#003400]/40" />
@@ -207,7 +246,7 @@ export default function Component() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredToppers.map((topper, index) => (
+            {toppers.map((topper, index) => (
               <div
                 key={topper._id}
                 className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden animate-fade-in"
@@ -246,7 +285,7 @@ export default function Component() {
                   <div className="w-32 h-32 mx-auto rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-[#faf5e9] to-white">
                     {topper.image ? (
                       <Image
-                        src={topper.image || "/placeholder.svg"}
+                        src={topper.image}
                         alt={`${topper.state} Topper`}
                         width={116}
                         height={116}

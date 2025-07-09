@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Award } from 'lucide-react';
+import { Search, Award, User } from 'lucide-react';
 import Logo from '../assets/Logo.png';
 import Image from 'next/image';
 
@@ -28,7 +28,7 @@ export default function Navbar() {
 
           {/* Search Bar and Results Button Container */}
           <div className="hidden md:flex flex-1 items-center justify-end max-w-3xl ml-8 gap-4">
-            {/* Search Bar */}
+          {/* Search Bar */}
             <form onSubmit={handleSearch} className="flex-1 relative">
               <input
                 type="text"
@@ -49,6 +49,15 @@ export default function Navbar() {
             >
               <Award className="w-5 h-5" />
               Results
+            </Link>
+
+            {/* Teachers Button */}
+            <Link
+              href="/teachers"
+              className="inline-flex items-center gap-2 px-6 py-2 bg-[#004400] text-white rounded-full font-medium transition-all hover:bg-[#005500] hover:scale-105 shadow-md whitespace-nowrap"
+            >
+              <User className="w-5 h-5" />
+              Teachers
             </Link>
           </div>
 
@@ -75,6 +84,15 @@ export default function Navbar() {
             >
               <Award className="w-4 h-4" />
               Results
+            </Link>
+
+            {/* Mobile Teachers Button */}
+            <Link
+              href="/teachers"
+              className="inline-flex items-center gap-1 px-4 py-1.5 bg-[#004400] text-white rounded-full text-sm font-medium hover:bg-[#005500]"
+            >
+              <User className="w-4 h-4" />
+              Teachers
             </Link>
           </div>
         </div>
