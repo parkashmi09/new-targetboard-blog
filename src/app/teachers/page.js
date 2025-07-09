@@ -19,7 +19,7 @@ export default function TeachersPage() {
         if (!response.ok) throw new Error(`Failed to fetch categories: ${response.status}`);
         const data = await response.json();
         setCategories(data);
-      } catch (err) {
+      } catch {
         setCategories([
           { _id: "all", name: "All Teachers" },
           { _id: "english", name: "English Teacher" },
@@ -45,7 +45,7 @@ export default function TeachersPage() {
         if (!response.ok) throw new Error(`Failed to fetch teachers: ${response.status}`);
         const data = await response.json();
         setTeachers(data);
-      } catch (err) {
+      } catch {
         setError(err instanceof Error ? err.message : "Failed to load teachers");
       } finally {
         setLoading(false);
@@ -117,7 +117,7 @@ export default function TeachersPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {teachers.map((teacher, index) => (
+              {teachers.map((teacher) => (
                 <div
                   key={teacher._id}
                   className="bg-white rounded-3xl shadow-xl p-8 text-center flex flex-col items-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
