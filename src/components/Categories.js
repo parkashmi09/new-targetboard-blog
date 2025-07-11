@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { FlaskConical, Stethoscope, BookOpen, GraduationCap, Briefcase, Landmark, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const iconMap = {
+  'ALL Exam': BookOpen,
   'All Exam': BookOpen,
   'CBSE': GraduationCap,
   'CUET Exam': Briefcase,
@@ -24,12 +25,39 @@ export default function Categories() {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/blog-category`);
+        
+        // Debug: Check environment variable
+        console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+        
+        // Use fallback URL if environment variable is not set
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://clownfish-app-q4s7f.ondigitalocean.app/api/v1';
+        const apiUrl = `${baseUrl}/blog-category`;
+        
+        console.log("Making API call to:", apiUrl);
+        
+        const response = await fetch(apiUrl);
+        console.log("Response status:", response.status);
+        console.log("Response ok:", response.ok);
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch categories');
+          throw new Error(`Failed to fetch categories: ${response.status}`);
         }
-        const data = await response.json();
-        setCategories(data || []);
+        
+        const result = await response.json();
+        console.log("Full API response:", result);
+        
+        // Handle the API response structure with success and data
+        if (result.success && result.data) {
+          console.log("Setting categories from result.data:", result.data);
+          setCategories(result.data);
+        } else if (Array.isArray(result)) {
+          console.log("Setting categories from direct array:", result);
+          setCategories(result);
+        } else {
+          console.log("No valid data found, setting empty array");
+          setCategories([]);
+        }
+        
         setError(null);
       } catch (err) {
         console.error('Error fetching categories:', err);
