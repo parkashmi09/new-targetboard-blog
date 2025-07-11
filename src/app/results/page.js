@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Trophy, MapPin, Calendar, Hash, Target, Star, Award, Medal } from 'lucide-react'
+import Link from "next/link";
 
 export default function Component() {
   const [activeCategory, setActiveCategory] = useState("all")
@@ -282,7 +283,7 @@ export default function Component() {
 
                 {/* Avatar */}
                 <div className="relative -mt-6 px-6">
-                  <div className="w-32 h-32 mx-auto rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-[#faf5e9] to-white">
+                  <div className="w-32 h-32 mx-auto rounded-full border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-[#faf5e9] to-white">
                     {topper.image ? (
                       <Image
                         src={topper.image}
@@ -332,10 +333,10 @@ export default function Component() {
                   </div>
 
                   {/* Action Button */}
-                  <button className="w-full bg-gradient-to-r from-[#003400] to-[#004400] hover:from-[#004400] hover:to-[#005500] text-[#faf5e9] font-bold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm flex items-center justify-center gap-2 group">
+                  <Link href={`/results/${topper._id}`} className="w-full bg-gradient-to-r from-[#003400] to-[#004400] hover:from-[#004400] hover:to-[#005500] text-[#faf5e9] font-bold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm flex items-center justify-center gap-2 group">
                     <Award className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                     VIEW DETAILS
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Decorative Elements */}
