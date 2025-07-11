@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { Trophy, Calendar, Hash, Target, Star, MapPin, User } from 'lucide-react';
 import Image from "next/image";
-import { Trophy, Calendar, Hash, Target, Star, Award, Medal, MapPin, User } from 'lucide-react';
 
-export default function TopperDetailsPage() {
-  const { id } = useParams();
+export default function TopperDetailsPage({ params }) {
+  const { id } = params;
   const [topper, setTopper] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -81,8 +81,8 @@ export default function TopperDetailsPage() {
         {/* Topper Image */}
         <div className="flex flex-col items-center mt-8 mb-6">
           <div className="w-36 h-36 rounded-full border-4 border-[#003400] shadow-xl overflow-hidden bg-gradient-to-br from-[#faf5e9] to-white">
-            {topper.image ? (
-              <img src={topper.image} alt={topper.state + " Topper"} className="w-full h-full object-cover" />
+            {topper.image && !imgError ? (
+              <Image src={topper.image} alt={topper.state + " Topper"} width={160} height={160} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={() => setImgError(true)} unoptimized />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#003400]">
                 <User className="w-16 h-16 text-[#faf5e9]" />
