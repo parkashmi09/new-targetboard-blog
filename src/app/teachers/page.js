@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Star, Award, User, BookOpen, CheckCircle, ArrowRight } from 'lucide-react';
+import { Star, Award, User, BookOpen, ArrowRight } from 'lucide-react';
+import Verified from "../../assets/verified.png"
 
 export default function TeachersPage() {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("all");
   const [categories, setCategories] = useState([]);
   const [teachers, setTeachers] = useState([]);
@@ -142,7 +145,8 @@ export default function TeachersPage() {
                     <span className="text-xl font-extrabold text-[#17612A] tracking-wide uppercase">
                       {(teacher.name ? teacher.name.split(' ')[0] : teacher.subject) + ' SIR'}
                     </span>
-                    <CheckCircle className="w-5 h-5 text-blue-500" />
+                    {/* <CheckCircle className="w-5 h-5 text-blue-500" /> */}
+                    <Image src={Verified} alt="Verified Badge" className="h-8 w-8 object-contain "/>
                   </div>
 
                   {/* Subject */}
@@ -166,7 +170,10 @@ export default function TeachersPage() {
                   </div>
 
                   {/* View Button */}
-                  <button className="w-full bg-[#17612A] text-white rounded-lg py-2 font-semibold flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[#11451d]">
+                  <button 
+                    onClick={() => router.push(`/teachers/${teacher._id}`)}
+                    className="w-full bg-[#17612A] text-white rounded-lg py-2 font-semibold flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[#11451d]"
+                  >
                     View <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
